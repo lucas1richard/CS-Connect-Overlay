@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>C&amp;S Overlay Options</title>
+  <script src="angular.min.js"></script>
+  <script src="angular-route.min.js"></script>
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../options/css/options.css">
+  <script src="../jquery.js"></script>
+  <script src="../bootstrap.js"></script>
+</head>
+
+<body ng-app="app" ng-controller="optionsCtrl">
+  <div ng-include="'templates/navbar.html'"></div>
+  <div id="main" class="container" style="margin-left:300px;">
+    <a href="#" id="extensionsLink">Extensions</a>
+    <div ng-view></div>
+  </div>
+  <footer></footer>
+  <script src="app.js"></script>
+  <script src="controllers/committeegroupsCtrl.js"></script>
+  <script src="controllers/modsCtrl.js"></script>
+  <script src="controllers/styleCtrl.js"></script>
+  <script src="controllers/shortlistCtrl.js"></script>
+  <script src="controllers/parseminutesCtrl.js"></script>
+  <script src="controllers/userinfoCtrl.js"></script>
+  <script src="controllers/emailtemplatesCtrl.js"></script>
+  <script src="controllers/memoryCtrl.js"></script>
+  <script src="controllers/recordlinksCtrl.js"></script>
+  <script src="directives/committeegroup.js"></script>
+  <script src="factory/getJSON.factory.js"></script>
+</body>
+
+</html>

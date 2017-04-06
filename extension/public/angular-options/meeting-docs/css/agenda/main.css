@@ -1,0 +1,122 @@
+body {
+  background:#f2f2f2;
+}
+h4, h3 {
+  margin:0px;
+  font-size:1em;
+  font-weight: bold;
+}
+.extraRecordInfo {
+  margin-left: 20px;
+}
+.gapTop {
+  margin-top:2em;
+}
+* {
+  font-size:11pt;
+  font-family: "Calibri", "sans-serif"!important;
+}
+#main {
+  max-width:1100px;
+  padding:60px;
+  background-color: #ffffff;
+  box-shadow: 0px 0px 8px;
+}
+a {
+  color:blue;
+}
+a:visited {
+  color:blue;
+}
+a:hover {
+  color:blue;
+}
+.revisionItem button {
+  display:none!important;
+}
+.revisionItem:hover button {
+  display:inline!important;
+}
+#agendaID {
+  margin-top:250px;
+}
+.revisionItem {
+  margin-left:2em;
+  page-break-inside: avoid;
+}
+#letterHead {
+  width:100%;
+  height:auto;
+}
+.drop-options {
+  list-style: none;
+  max-height:400px;
+  max-width:1000px;
+  padding-left:0px;
+  overflow-y:scroll;
+  position:absolute;
+  z-index:100;
+}
+.drop-options::-webkit-scrollbar {
+  display:none;
+}
+.drop-options li {
+  line-height: 1.5em;
+  border:1px solid #dedede;
+  background-color:white;
+  padding:0.7em;
+  cursor:pointer;
+}
+.drop-options li:hover {
+  background-color:#f2f2f2;
+}
+.lookNormal {
+  text-decoration: none;
+  color:inherit;
+  cursor:pointer;
+}
+.lookNormal:hover, .lookNormal:focus {
+  text-decoration: none;
+  color:inherit;
+  cursor:pointer;
+}
+#note {
+  position: absolute;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0px 0px 8px;
+  width: 350px;
+}
+.recentballotTd {
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-top:2px;
+  padding-bottom:2px;
+}
+@media print {
+  input {
+    display:none!important;
+  }
+  #letterHead {
+    position:absolute;
+    top:0px;
+    width:920px;
+    height:auto;
+    margin:auto;
+  }
+  #note {
+    display:none;
+  }
+}
+@media screen and (max-width:1200px) {
+  #note {
+    display:block;
+    position:static;
+    position:relative;
+    margin:auto;
+    margin-bottom:50px;
+  }
+}

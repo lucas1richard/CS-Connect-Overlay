@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Attendance List</title>
+  <link rel="stylesheet" href="css/attendance.css">
+  <script src="../angular.min.js"></script>
+</head>
+<body ng-app="attendance" ng-controller="attendanceCtrl">
+  <div id="main">
+  <button id="printBtn">Print</button>
+  <input type="text" placeholder="Committee" ng-model="committee" />
+  <ul ng-if="committee" class="drop-options">
+    <li ng-repeat="c in allCommittees | filter : committee" ng-click="complete(c);">{{c.committee}}</li>
+  </ul>
+  <input type="date" ng-model="date" />
+  <div style="clear:both">
+    <h3 ng-bind="selectedcommittee.committee" class="pageTop col-1"></h3>
+    <h3 class="pageTop text-right col-2">{{ date.toLocaleDateString() }}</h3>
+  </div>
+  <div style="clear:both">
+    <table border=1 id="regularAttendance">
+      <tr>
+        <th>Name</th>
+        <th>Visitor Email</th>
+        <th>Visitor (V)/ Member (M)</th>
+      </tr>
+      <tr ng-repeat="r in numRows">
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </table>
+  </div>
+  </div>
+</body>
+<script src="js/attendance.js"></script>
+<script src="factory/getJSON.factory.js"></script>
+
+</html>

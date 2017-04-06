@@ -1,0 +1,57 @@
+<div id="parseMinutes">
+	<p class="tip">
+		Directly copy your entire meeting Minutes front matter (press Ctrl+A then Ctrl+C) from a Microsoft Word file to the text area below:
+	</p>
+	<p class="tip">
+	This tool requires that you format your Minutes with each Action or Motion item on a separate line
+	</p>
+	<div>
+		<div ng-if="helpfulmembers.length > 0">
+			<h4>Actions</h4>
+			<memberactions ng-repeat="member in helpfulmembers | orderBy:'member'"  member="member"></memberactions>
+		</div>
+
+		<div ng-if="motions.length > 0">
+			<h4>Motions</h4>
+			<ul>
+				<li ng-repeat="m in motions">{{m}}</li>
+			</ul>
+		</div>
+	</div>
+	<button class="btn btn-primary" id="MinsBtn" ng-click="parse()">Get Actions &amp; Minutes</button>
+	<div class="form form-inline">
+
+
+		<span class="input-group">
+			<span class="input-group-addon"><label for="delimiter">Delimiter:</label></span>
+			<input type="text" id="delimiter" ng-model="delimiter" value=": " class="form-control" style="width:60px" />
+		</span>
+		<span class="tip">(Used for separating the Motion or Action label from the content)</span>
+		<br/>
+
+
+
+		<span class="input-group">
+			<span class="input-group-addon"><label for="actiondelimiter">Action Delimiter:</label></span>
+			<input type="text" id="actiondelimiter" ng-model="actiondelimiter" value=" will " class="form-control" style="width:60px" />
+		</span>
+		<span class="tip">(Used for separating the person's name from the action)</span>
+		<br/>
+
+
+
+		<span class="input-group">
+			<span class="input-group-addon"><label for="motionkey">Motion Keyword:</label></span>
+			<input type="text" id="motionkey" ng-model="motionkey" value="Motion:" class="form-control" style="width:100px" />
+		</span>
+		<span class="tip">(If you don't use "Motion:" in your Minutes, suggest using "vote")</span>
+	
+
+	</div>
+
+
+		
+<textarea id="Minutes" class="form-control" rows=100 ng-model="minutesText">
+
+</textarea>
+</div>

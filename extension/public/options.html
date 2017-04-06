@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>C&amp;S Overlay Options</title>
+  <script src="angular-options/angular.min.js"></script>
+  <script src="angular-options/angular-route.min.js"></script>
+  <link rel="stylesheet" href="../../assets/css/bootstrap.css">
+  <link rel="stylesheet" href="options/css/options.css">
+  <script src="js/jquery.js"></script>
+  <!-- <script src="bootstrap.js"></script> -->
+</head>
+
+<body ng-app="app" ng-controller="optionsCtrl">
+  <div ng-include="'templates/navbar.html'"></div>
+  <div id="main" class="container" style="margin-left:300px;">
+    <a href="#" id="extensionsLink">Extensions</a>
+    <div ng-view></div>
+  </div>
+  <footer></footer>
+  <script src="angular-options/app.js"></script>
+  <script src="angular-options/controllers/committeegroupsCtrl.js"></script>
+  <script src="angular-options/controllers/modsCtrl.js"></script>
+  <script src="angular-options/controllers/styleCtrl.js"></script>
+  <script src="angular-options/controllers/shortlistCtrl.js"></script>
+  <script src="angular-options/controllers/parseminutesCtrl.js"></script>
+  <script src="angular-options/controllers/userinfoCtrl.js"></script>
+  <script src="angular-options/controllers/emailtemplatesCtrl.js"></script>
+  <script src="angular-options/controllers/memoryCtrl.js"></script>
+  <script src="angular-options/controllers/recordlinksCtrl.js"></script>
+  <script src="angular-options/directives/committeegroup.js"></script>
+  <script src="angular-options/factory/getJSON.factory.js"></script>
+</body>
+
+</html>

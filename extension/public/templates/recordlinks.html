@@ -1,0 +1,10 @@
+<div>
+  <textarea class="form-control" name="" id="" cols="30" rows="15" ng-model="records"></textarea>
+  <ul>
+    <li ng-repeat="record in showLink(records)">
+      <a ng-href="https://cstools.asme.org/csconnect/SearchAction.cfm?TrackingNumber={{record.split('-')[1]}}&YearOpened={{record.split('-')[0]}}&NoToolbar=yes" target="_blank">
+        {{record}}
+      </a>
+    </li>
+  </ul>
+</div>

@@ -1,0 +1,47 @@
+{
+  "name": "C&S Connect Overlay",
+  "description": "Helps make C&S Connect more staff-friendly",
+  "version": "3.76",
+
+  "author":"Richard Lucas",
+
+  "permissions": [
+    "storage",
+    "cookies",
+    "tabs",
+    "http://*/*",
+    "https://*/*"
+  ],
+  "options_page": "public/options.html",
+  "icons": {
+    "32": "img/icon32.png",
+    "48": "img/icon.png",
+    "128": "img/icon.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [ "https://cstools.asme.org/csconnect/*" ],
+      "css":[ "assets/css/bootstrap.css" ],
+      "js": [
+        "bundle.js"
+      ],
+      "json": [
+        "functions/titles.json",
+        "json/committees.json"
+      ]
+    }
+  ],
+  "web_accessible_resources":[
+    "interps.footer.png",
+    "public/*",
+    "functions/titles.json",
+    "assets/json/committees.json",
+    "reference/*",
+    "assets/fonts/*"
+  ],
+  "browser_action": {
+    "default_title": "Improve C&S Connect",
+    "default_popup": "popup.html"
+  },
+  "manifest_version": 2
+}

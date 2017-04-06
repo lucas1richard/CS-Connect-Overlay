@@ -1,0 +1,18 @@
+<div id="modifications" style="margin-top:1em">
+	<div class="form-group">
+		<div class="input-group">
+			<span class="input-group-addon"><label for="searchmods">Search:</label></span>
+			<input type="text" class="form-control" ng-model="searchmods" id="searchmods" />
+			<span class="input-group-addon" ng-click="searchmods=''"><span class="glyphicon glyphicon-remove"></span></span>
+		</div>
+	</div>
+	<div ng-repeat="mod in mods | filter: searchmods | orderBy:['-version','name']" ng-style="isNew(mod).style">
+		<h4 ng-if="isNew(mod).q">-- New --</h4>
+		<h4>{{mod.mod}}</h4>
+		<div><b>C&amp;S Connect Page:</b> {{mod.page}}</div>
+		<div><b>Function:</b> {{mod.fnc}}</div>
+		<div ng-if="mod.caveat"><b>Caveat:</b> {{mod.caveat}}</div>
+		<div class="pull-right"><b>Version:</b> {{mod.version}}</div>
+		<hr/>
+	</div>
+</div>

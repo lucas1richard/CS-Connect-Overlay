@@ -1,0 +1,31 @@
+{
+  "name": "CSConnect",
+  "version": "1.0.0",
+  "description": "This is the Google Chrome extension for ASME C&S Connect.",
+  "main": "angular.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node_modules/webpack/bin/webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lucas1richard/CSConnectOverlay.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lucas1richard/CSConnectOverlay/issues"
+  },
+  "homepage": "https://github.com/lucas1richard/CSConnectOverlay#readme",
+  "dependencies": {
+    "angular": "^1.6.4",
+    "babel-core": "^6.24.0",
+    "babel-loader": "^6.4.1",
+    "babel-preset-angular": "^6.0.15",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-react": "^6.23.0",
+    "jquery": "^3.2.1",
+    "webpack": "^2.3.3"
+  }
+}

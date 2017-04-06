@@ -1,0 +1,31 @@
+<div class="form committeegroup">
+	<div class="form-inline">
+		<button class="btn btn-danger btn-xs pull-right" ng-click="rmv(ind)">
+			<span class="glyphicon glyphicon-remove"></span>
+		</button>
+
+
+		<span class="input-group">
+			<span class="input-group-addon" ng-model="grp.title"><label>Group Title: </label></span>
+			<input type="text" class="form-control" ng-model="grp.title" ng-style="checkTitle(grp.title)" />
+		</span>
+
+
+		<input ng-model="newCommittee" class="form-control" placeholder="Add New Committee" />
+		<ul ng-if="checkMatch(newCommittee)" class="drop-options">
+		    <li ng-repeat="c in allCommittees | filter : newCommittee" ng-click="complete(c)">{{c.committee}}</li>
+		</ul>
+		
+		<div class="list-group">
+			<div class="list-group-item" ng-repeat="s in comdata.committees" ng-style="addStyle(s)">
+				<button class="btn btn-xs btn-default" ng-click="removeCommittee(s)">
+					<span class="glyphicon glyphicon-remove-sign" style="color:red"></span>
+				</button>
+				<b ng-bind="s.committee" ></b>
+			</div>
+		</div>
+		</div>
+		<button class="btn btn-primary">Save</button>
+</div>
+
+	

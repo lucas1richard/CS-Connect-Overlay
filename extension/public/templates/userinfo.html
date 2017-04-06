@@ -1,0 +1,33 @@
+<div id="userInfo">
+	<p class="tip">
+		When this information is provided, interpretation records will include a button at the top. Clicking that button will create a formal issuance letter you can print or copy.
+	</p>
+	<div class="form form-inline">
+		<p><span class="input-group">
+			<span class="input-group-addon"><label for="firstName">First Name:</label></span>
+			<input class="form-control" id="firstName" ng-model="firstname" type="text" />
+		</span>
+		<span class="input-group">
+			<span class="input-group-addon"><label for="lastName">Last Name:</label></span>
+			<input class="form-control" id="lastName" ng-model="lastname" type="text" />
+		</span></p>
+		<p><span class="input-group">
+			<span class="input-group-addon"><label for="workPhone">Work Phone:</label></span>
+			<input class="form-control" id="workPhone" ng-model="phone" type="text" />
+		</span>
+		<span class="input-group">
+			<span class="input-group-addon"><label for="workEmail">Work Email:</label></span>
+			<input class="form-control" id="workEmail" ng-model="email" type="text" />
+		</span></p>
+	</div>
+
+	<p>
+		<b>{{ firstname }} {{ lastname }}</b><br/>
+		{{ phone }}<br/>
+		{{ email }}<br/>
+	</p>
+	<p>
+		<button id="saveUserInfo" class="btn btn-primary" ng-click="saveInfo()">Save</button>
+	</p>
+	<h4 class="text-success">{{ message }}</h4>
+</div>

@@ -1,0 +1,38 @@
+<div id="committeegroups">
+	<button id="addcommitteegroup" class="btn btn-default" ng-click="addGroup()">
+		<span class="glyphicon glyphicon-plus-sign"></span> New Group
+	</button>
+	<button class="btn btn-primary" ng-click="saveGroups()" ng-disabled="updated">Save Groups</button>
+	<span ng-if="updated" style="color:green">Groups are Saved</span>
+	<div ng-repeat="grp in committeegroups">
+		<div class="form committeegroup">
+			<div class="form-inline">
+				<button class="btn btn-danger btn-xs pull-right" ng-click="removeGroup($index)">
+					<span class="glyphicon glyphicon-remove"></span>
+				</button>
+
+
+				<span class="input-group">
+					<span class="input-group-addon"><label>Group Title: </label></span>
+					<input type="text" class="form-control" ng-model="grp.title" ng-style="checkTitle(grp.title).css" />
+				</span>
+				<span ng-if="checkTitle(grp.title).error" style="color:red">Duplicate Title</span>
+			</div>
+
+
+				<input ng-model="newCommittee[$index]" class="form-control" placeholder="Add New Committee" />
+				<ul ng-if="newCommittee[$index]" class="drop-options">
+				    <li ng-repeat="c in allCommittees | filter : newCommittee[$index] | orderBy:'committee'" ng-click="complete(grp, c); newCommittee[$index] = ''">{{c.committee}}</li>
+				</ul>
+				
+				<div class="list-group">
+					<div class="list-group-item" ng-repeat="s in grp.committees" ng-style="addStyle(s)">
+						<button class="btn btn-xs btn-default" ng-click="removeCommittee(grp.committees, s)">
+							<span class="glyphicon glyphicon-remove-sign" style="color:red"></span>
+						</button>
+						<b ng-bind="s.committee" ></b>
+					</div>
+				</div>
+		</div>
+	</div>
+</div>

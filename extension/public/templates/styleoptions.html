@@ -1,0 +1,82 @@
+<div id="styles">
+	<button id="clearStyleChanges" class="btn btn-default">Clear All My Style Changes</button>
+	<button class="btn btn-primary" id="customStyleInput" ng-click="saveStyles()">Save</button>
+	<div id="status"></div>
+	<div class="row no-pad">
+		<h3>Custom Design</h3>
+		<h4>Table Header:</h4>
+		<p class="form form-inline">
+			<span class="input-group">
+				<span class="input-group-addon"><label for="bgcolor-table">Background color:</label></span>
+				<input id="bgcolor-table" type="color" ng-model="tablebackground" />
+			</span>
+			<span class="input-group">
+				<span class="input-group-addon"><label for="brcolor-table">Border color:</label></span>
+				<input id="brcolor-table" type="color" ng-model="tableborder" />
+			</span>
+		</p>
+		<h4>Input:</h4>
+		<p class="form form-inline">
+			<span class="input-group">
+				<span class="input-group-addon"><label for="bgcolor-input">Background color:</label></span>
+				<input id="bgcolor-input" type="color" ng-model="inputbackground" />
+			</span>
+			<span class="input-group">
+				<span class="input-group-addon"><label for="brcolor-input">Border color:</label></span>
+				<input id="brcolor-input" type="color" ng-model="inputborder" />
+			</span>
+			<span class="input-group">
+				<span class="input-group-addon"><label for="txtcolor-input">Text color:</label></span>
+				<input id="txtcolor-input" type="color" ng-model="inputtext" />
+			</span>
+			<label for="3dfx">3D</label>
+			<input id="3dfx" type="checkbox" style="height:26px; width:26px; vertical-align:middle;" ng-model="threed">
+		<p>
+	</div>
+	<hr style="border:3px solid gray"/>
+	<h3>Demo</h3>
+	<!-- <div class="row no-pad">
+		<div class="headStyleOption" style="background-color:white; border:1px solid white" data-bgColor="white" data-brColor="white"></div>
+		<div class="headStyleOption" style="background-color:white; border:1px solid black" data-bgColor="white" data-brColor="black"></div>
+		<div class="headStyleOption" style="background-color:#dedede; border:1px solid black" data-bgColor="#dedede" data-brColor="black"></div>
+		<div class="headStyleOption" style="background-color:#d9edf7; border:1px solid #bce8f1" data-bgColor="#d9edf7" data-brColor="#bce8f1"></div>
+		<div class="headStyleOption" style="background-color:#ffffcc; border:1px solid #ffff80" data-bgColor="#ffffcc" data-brColor="#ffff80"></div>
+		<div class="headStyleOption" style="background-color:#ffd8cc; border:1px solid #ff9d80" data-bgColor="#ffd8cc" data-brColor="#ff9d80"></div>
+		<div class="headStyleOption" style="background-color:#ffd9b3; border:1px solid #ffb366" data-bgColor="#ffd9b3" data-brColor="#ffb366"></div>
+		<div class="headStyleOption" style="background-color:#d1e0d6; border:1px solid #a4c1ae;" data-bgColor="#d1e0d6" data-brColor="#a4c1ae"></div>
+		<div class="headStyleOption" style="background-color:#d6ccc2; border:1px solid #8a745b;" data-bgColor="#d6ccc2" data-brColor="#8a745b"></div>
+	</div> -->
+	<table class="table table-condensed">
+		<thead>
+			<tr><th id="testTH" ng-style="{background:'linear-gradient('+tableborder+', '+tablebackground+', '+tableborder+')'}">This is a table header</th></tr>
+		</thead>
+		<tbody>
+			<tr><td>Table row</td></tr>
+			<tr><td>Table row</td></tr>
+			<tr><td>Table row</td></tr>
+		</tbody>
+	</table>
+	
+
+	<!-- <div class="row no-pad">
+		<div class="inpStyleOption" style="background-color:white; border:1px solid #dedede" data-bgColor="white" data-brColor="#dedede"></div>
+		<div class="inpStyleOption" style="background-color:white; border:1px solid black" data-bgColor="white" data-brColor="black"></div>
+		<div class="inpStyleOption" style="background-color:#dedede; border:1px solid black" data-bgColor="#dedede" data-brColor="black"></div>
+		<div class="inpStyleOption" style="background-color:#d9edf7; border:1px solid #bce8f1" data-bgColor="#d9edf7" data-brColor="#bce8f1"></div>
+		<div class="inpStyleOption" style="background-color:#ffffcc; border:1px solid #ffff80" data-bgColor="#ffffcc" data-brColor="#ffff80"></div>
+		<div class="inpStyleOption" style="background-color:#ffd8cc; border:1px solid #ff9d80" data-bgColor="#ffd8cc" data-brColor="#ff9d80"></div>
+		<div class="inpStyleOption" style="background-color:#ffd9b3; border:1px solid #ffb366" data-bgColor="#ffd9b3" data-brColor="#ffb366"></div>
+		<div class="inpStyleOption" style="background-color:#d1e0d6; border:1px solid #a4c1ae;" data-bgColor="#d1e0d6" data-brColor="#a4c1ae"></div>
+		<div class="inpStyleOption" style="background-color:#d6ccc2; border:1px solid #8a745b;" data-bgColor="#d6ccc2" data-brColor="#8a745b"></div>
+	</div> -->
+	<div>
+		<div class="row" data-bgColor="white" data-brColor="#dedede">
+			<div class="col-md-6">
+				<input type="text" ng-style="formatStyle()" id="inpStyle" class="form-control" placeholder="These inputs are just for demo" value="Test Input" />
+			</div>
+			<div class="col-md-6">
+				<select class="form-control" ng-style="formatStyle()" id="selStyle" size="6"></select>
+			</div>
+		</div>
+	</div>
+</div>

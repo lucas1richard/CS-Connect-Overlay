@@ -1,0 +1,11 @@
+<div>
+	<h2>Manage Memory</h2>
+	<div ng-repeat="(key,value) in currentSyncMemory">
+		<h4>{{ key }}</h4>
+		<pre style="margin-left:15px">{{ syntaxHighlight(value) }}</pre>
+	</div>
+	<div ng-repeat="(key,value) in currentLocalMemory">
+		<h4>{{ key }}</h4>
+		<pre style="margin-left:15px">{{ syntaxHighlight(value) }}</pre>
+	</div>
+</div>

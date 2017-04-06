@@ -1,0 +1,260 @@
+[
+    {
+      "mod":"Search Committees",
+      "page":"This page",
+      "fnc":"Search",
+      "version":3.6
+    },
+    {
+      "mod":"Board inclusion", 
+      "page":"Component or Entire Document Ballot", 
+      "fnc":"For Standards Committee ballots, the appropriate Board is automatically included for review and comment",
+      "version":3.5
+    },
+    {
+      "mod":"Committee Groups", 
+      "page":"Component or Entire Document Ballot",
+      "fnc":"Lets you save a group to be added for normal ballot or for review by clicking a button",
+      "caveat":"Create the group in the Overlay Options page", 
+      "version":3.5
+    },
+    {
+      "mod":"Published records detection",
+      "page":"Record search page",
+      "fnc":"Checks records to determine if they have been published, and updates them with that status if applicable",
+      "caveat":"You must watch this tool in action and acknowledge when a record is updated. This tool enables you to modify records for committees for which you are not the staff secretary",
+      "version": 3.0
+    },
+    {
+      "mod":"Interpretation response email", 
+      "page":"Any interpretation record (view mode)", 
+      "fnc":"Generate email to inquirer when their inquiry is invalid",
+      "version": 2.5
+    },
+    {
+      "mod":"Custom style options", 
+      "page":"C&amp;S Connect Overlay Page (Style Options)", 
+      "fnc":"Create your own style rather than use a predefined style",
+      "caveat":"You need to reference an outside page to get color codes (link provided on page)",
+      "version": 2.5
+    },
+    {
+      "mod":"Component ballot explanation default", 
+      "page":"C&amp;S Connect Overlay Page (Input Defaults)", 
+      "fnc":"Set a default input for component ballot explanations. This is useful as a template for consistency.",
+      "caveat":"",
+      "version": 2.5
+    },
+    {
+      "mod":"Ballot closure vote tally for multiple records", 
+      "page":"Update Component Ballot page", 
+      "fnc":"Voting results are tallied and names are recorded as appropriate.",
+      "caveat":"This currently only works with one committee.",
+      "version": 2.5
+    },
+    {
+      "mod":"Ballot closure vote tally", 
+      "page":"Update Member Ballot page", 
+      "fnc":"Voting results are tallied and names are recorded as appropriate.",
+      "caveat":"This currently only works with one committee.",
+      "version": 2.5
+    },
+    {
+      "mod":"Record TPM email is a direct link", 
+      "page":"Any component record", 
+      "fnc":"Clicking on the TPM's email will open an Outlook email message prepopulated with the TPM's email, subject field, and email body. It will include your name if you provide it.",
+      "version": 2.0
+    },
+    {
+      "mod":"Quick View tool", 
+      "page":"Any page with the navigation bar", 
+      "fnc":"Open a new tab with the record or ballot entered without needing to go to the Search page.",
+      "version": 2.0
+    },
+    {
+      "mod":"Addition of Generate Interpretation Letter button at the top of the page", 
+      "page":"Any Interpretation Record", 
+      "fnc":"Clears the window and creates an interpretation letter with ASME letterhead, date, inquirer's address, subject, C/S edition, year, inquiry/response (as submitted to the database on submission), and your name if provided",
+      "caveat":"If your letter is more than one page long, the system will not break it into separate pages. You can still copy/paste the generated letter into a Word document and add the letterhead.", 
+      "version": 2.0
+    },
+    {
+      "mod":"Addition of Create Email List button", 
+      "page":"VCC page where you would actually write the email", 
+      "fnc":"Clears the window and creates a list of the committee members' email addresses which can be copy/paste to an email window.",
+      "version": 2.0
+    },
+    {
+      "mod":"Committee short list", 
+      "page":"Staff page and VCC page", 
+      "fnc":"The dropdown list will include a list at the top that contains the committees of your choosing.",
+      "caveat":"You must choose the committees on the Overlay Options page.", 
+      "version": 1.0
+    },
+    {
+      "mod":"Open Ballot automation", 
+      "page":"New Component Ballot or Recirculation Ballot page", 
+      "fnc":"Voting period ends is populated with 4 weeks or 2 weeks out, depending on the type of the ballot. Setting the committee level will automatically include the appropriate committee. Inclusion of records and changing the ballot level will automatically change the Description field and Opening Remarks field.",
+      "caveat":"Standards committee level ballots do not automatically include the Board for review and comment.", 
+      "version": 1.0
+    },
+    {
+      "mod":"Comment response warning", 
+      "page":"Any View Component Record page", 
+      "fnc":"Checks responses to comments and detects duplicates. If duplicates are found, a warning is displayed at the top of the page.",
+      "version": 2.0
+    },
+    {
+      "mod":"General ease of use", 
+      "page":"Search page", 
+      "fnc":"'Record' is automatically selected and the input field is focused, so you can just type without needing to click anything.",
+      "version": 1.0
+    },
+    {
+      "mod":"General ease of information", 
+      "page":"Ballot page", 
+      "fnc":"Different ballot types are color coded. Links that staff don't normally use are reduced. 'Voting Period Ends' is checked for each ballot; if the voting period has ended, the ballot will turn red and the 'Update' link will be highlighted.",
+      "version": 1.0
+    },
+    {
+      "mod":"General ease of information", 
+      "page":"Record Search Results page", 
+      "fnc":"If a record has been approved at a level lower than the Board, the font is red. If it has been approved at the Board level, the font is blue. Otherwise there is no change.",
+      "version": 1.0
+    },
+    {
+      "mod":"Addition of 'Reformat for Agenda' button", 
+      "page":"View Component Record page", 
+      "fnc":"Removes excess information boxes that contain no useful information (such as 'None'), and removes styles so the record can be printed directly to PDF instead of sending to Word.",
+      "version": 2.0
+    },
+    {
+      "mod":"Minutes Parser", 
+      "page":"Extension Options page", 
+      "fnc":"Compile a list of Actions and Motions recorded in meeting Minutes",
+      "caveat":"Minutes Actions and Motions must be in a specific format to be found by the program.", 
+      "version": 2.0
+    },
+    {
+      "mod":"Issuance letter capitalization", 
+      "page":"Any interpretation record (view mode)", 
+      "fnc":"Interpretation Issuance Letter corrects capitalization of the inquirer's name/address.",
+      "version":3.1
+    }, 
+    {
+      "mod":"Quick view recirculation", 
+      "page":"Any page with the navigation bar", 
+      "fnc":"Quick view can open recirculation ballots.",
+      "caveat":"The tool will need to open two other windows which will self-close to find the recirculation ballot",
+      "version":3.1 
+    }, 
+    {
+      "mod":"Email list stacked", 
+      "page":"VCC page where you would actually write the email", 
+      "fnc":"Email list page includes a back button, removes duplicate emails, and stacks them instead of showing them inline.",
+      "version":3.1
+    }, 
+    {
+      "mod":"Motions key word", 
+      "page":"Extension Options page", 
+      "fnc":"Minutes parser can use different key words to detect Motions.",
+      "version":3.1
+    },
+    {
+      "mod":"Recircluation statement update", 
+      "page":"New recirculation ballot", 
+      "fnc":"Recirculation ballot statement updated with suggestion from Managing Director.",
+      "version":3.1
+    },
+    {
+      "mod":"Recirculation ballot description", 
+      "page":"New recirculation ballot", 
+      "fnc":"Recirculation ballots automatically update the description input from 'Four weeks' to 'Two weeks' and 'first consideration' to 'recirculation'.",
+      "version":3.1
+    },
+    {
+      "mod":"Ballot closure reporting improvements", 
+      "page":"Component and Membership ballot closure", 
+      "fnc":"Handle reporting more complex ballots with multiple committees and records and with committee comments",
+      "version":3.6
+    },
+    {
+      "mod":"Committee page search", 
+      "page":"Any page with the navbar", 
+      "fnc":"Find committee page link by searching for the committee name, instead of using Committee Central",
+      "version":3.6
+    },
+    {
+      "mod":"Short-list indentation", 
+      "page":"Any page with the short list", 
+      "fnc":"Use the options page to specify that some committees (subgroups) should be indented. This is only for visual clarity",
+      "version":3.6
+    },
+    {
+      "mod":"Record update recording", 
+      "page":"Update component records", 
+      "fnc":"Staff modifications to records are recorded in the record 'Staff Notes' section",
+      "version":3.6
+    },
+    {
+      "mod":"Contact Project Manager", 
+      "page":"View Component record", 
+      "fnc":"Generates an email to the TPM with requests to update the record or respond to comments",
+      "version":3.6
+    },
+    {
+      "mod":"Meeting Documents", 
+      "page":"Options page", 
+      "fnc":"Provide printable regular attendance sheet and PDH attendance sheet. PDH attendance sheet will calculate meeting hours for you. You can save the description for the committee meeting on the PDH sheet. On print, these pages hide input fields",
+      "version":3.6
+    },
+    {
+      "mod":"Interface improvements", 
+      "page":"Multiple pages", 
+      "fnc":"Ballot pages, committee pages, and standard BSR-8 are made more readable by reducing the width. Soft alerts rather than alert-boxes. Minor input field location shifting.",
+      "version":3.6
+    },
+    {
+      "mod":"Standard BSR-8 crutches", 
+      "page":"Standard BSR-8 page", 
+      "fnc":"'Title of Standard' is added for you when you enter the Designation under 'Supersedes or Affects'. 'Draft to be made available electronically' is pre-checked. 'Project Intent' is pre-set to 'Revise current ANS'.",
+      "version":3.6
+    },
+    {
+      "mod":"Recirculation statement not editable", 
+      "page":"New recirculation ballot page", 
+      "fnc":"The recirculation statement is added in a way that is not modifiable",
+      "version":3.7
+    },
+    {
+      "mod":"Timesheet reminder", 
+      "page":"Any page with the navbar", 
+      "fnc":"The ADP link turns yellow every other Thursday, and red every other Friday as a reminder",
+      "version":3.7
+    },
+    {
+      "mod":"Code Case record support",
+      "page":"View/Update Code Case Record",
+      "fnc":"Provide the same options as with component records",
+      "version":3.7
+    },
+    {
+      "mod":"Reference page added to the navbar",
+      "page":"Any page with the navbar",
+      "fnc":"The reference page was sent out by Mayra and provides guidance",
+      "version":3.7
+    },
+    {
+      "mod":"Component ballot description",
+      "page":"New Component Ballot",
+      "fnc":"Removed 'Four week' from ballot description/opening statement",
+      "version":3.7
+    },
+    {
+      "mod":"Agenda Generator",
+      "page":"Options page -> Meeting Documents",
+      "fnc":"Create Agendas",
+      "caveat":"Subject to periodic change to accomodate suggestions",
+      "version":3.7
+    }
+  ]

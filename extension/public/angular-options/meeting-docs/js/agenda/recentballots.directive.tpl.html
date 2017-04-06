@@ -1,0 +1,40 @@
+<table border=1 style="border-collapse:collapse; margin:auto;">
+  <tr>
+    <th class="recentballotTd text-center">Record</th>
+    <th class="recentballotTd text-center">Ballot &amp; Level</th>
+    <th class="recentballotTd text-center">Status</th>
+    <th class="recentballotTd text-center">Project Manager</th>
+  </tr>
+  <tr ng-repeat="rb in includedRecords.component | filter:getRecentBallots | orderBy:'record'">
+    <td class="text-center recentballotTd" ng-attr-title="{{rb.subject}}">
+      <recordlink record="rb.record"></recordlink>
+    </td>
+    <td class="recentballotTd">{{rb.ballot.level}}</td>
+    <td class="text-center recentballotTd">{{rb.ballot.status}}</td>
+    <td class="text-center recentballotTd">{{rb.tpm}}</td>
+  </tr>
+  <tr ng-repeat="rb in includedRecords.codecase | filter:getRecentBallots | orderBy:'record'">
+    <td class="text-center recentballotTd" ng-attr-title="{{rb.subject}}">
+      <recordlink record="rb.record"></recordlink>
+    </td>
+    <td class="recentballotTd">{{rb.ballot.level}}</td>
+    <td class="text-center recentballotTd">{{rb.ballot.status}}</td>
+    <td class="text-center recentballotTd">{{rb.tpm}}</td>
+  </tr>
+  <tr ng-repeat="rb in includedRecords.entiredoc | filter:getRecentBallots | orderBy:'record'">
+    <td class="text-center recentballotTd" ng-attr-title="{{rb.subject}}">
+      <recordlink record="rb.record"></recordlink>
+    </td>
+    <td class="recentballotTd">{{rb.ballot.level}}</td>
+    <td class="text-center recentballotTd">{{rb.ballot.status}}</td>
+    <td class="text-center recentballotTd">{{rb.tpm}}</td>
+  </tr>
+  <tr ng-repeat="rb in includedRecords.interpretation | filter:getRecentBallots | orderBy:'record'">
+    <td class="text-center recentballotTd" ng-attr-title="{{rb.subject}}">
+      <recordlink record="rb.record"></recordlink>
+    </td>
+    <td class="recentballotTd">{{rb.ballot.level}}</td>
+    <td class="text-center recentballotTd">{{rb.ballot.status}}</td>
+    <td class="text-center recentballotTd">{{rb.tpm}}</td>
+  </tr>
+</table>

@@ -1,0 +1,8 @@
+<div class="pull-left">
+	<ul class="navbar-side">
+		<li><h3>C&amp;S Connect Overlay</li>
+		<li ng-repeat="nav in links" ng-class="nav.clss">
+			<a ng-href="{{nav.href}}" ng-click="setActive(nav)">{{nav.title}}</a>
+		</li>
+	</ul>
+</div>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Agenda</title>
+  <link rel="stylesheet" href="../../../assets/css/bootstrap.css">
+  <link rel="stylesheet" href="css/agenda/main.css">
+  <script src="../angular.min.js"></script>
+
+</head>
+<body ng-app="agenda" ng-controller="agendaCtrl">
+  <div id="note">
+    After adding all of the records, please manually copy the Agenda and post it to a Microsoft Word document. Some manual reformatting will be required.
+  </div>
+  <div class="container" id="main">
+    <div class="form-inline">
+      <input id="recordInput" type="text" class="form-control" placeholder="Record (Enter to submit)" ng-disabled="disabled" focus-me="!disabled" ng-keydown="fetchRecord($event, searchRecord)" ng-model="searchRecord" />
+      <input type="date" class="form-control" ng-model="meetingDate" />
+      Previous Meeting:
+      <input type="date" class="form-control" ng-model="prevMeetingDate" />
+      <input placeholder="Committee" type="text" class="form-control" ng-model="committee" />
+      <button class="btn btn-default" ng-click="saveForParsing()">Save for Parsing</button>
+      <ul ng-if="committee" class="drop-options">
+        <li ng-repeat="c in allCommittees | filter : committee" ng-click="complete(c);">
+          {{ c.committee.replace(" SC "," Subcommittee ") }}
+        </li>
+      </ul>
+    </div>
+    <div ng-if="error" class="text-danger">
+      {{error}}
+    </div>
+    <div ng-if="success" class="text-success">
+      {{success}}
+    </div>
+
+    <div>
+      <img id="letterHead" src="img/letterhead.png" alt="ASME Letterhead">
+    </div>
+
+    <div class="text-center" id="agendaID">
+      <h1>AGENDA</h1>
+      <a class="lookNormal" target="_blank" ng-href="https://cstools.asme.org/csconnect/CommitteePages.cfm?Committee={{selectedcommittee.num}}"><h3>{{ selectedcommittee.committee.replace(" SC "," Subcommittee ") }}</h3></a>
+      <p ng-if="meetingDate">
+        {{ monthYear(meetingDate, true) }}
+      </p>
+    </div>
+
+    <br/><br/>
+    <h3>CALL TO ORDER</h3>
+    <br/><br/>
+    <h3>ATTENDANCE &AMP; INTRODUCTIONS</h3>
+    <br/><br/>
+    <h3>ADOPTION OF THE AGENDA</h3>
+    <br/><br/>
+    <h3>APPROVAL OF THE MINUTES <span ng-if="prevMeetingDate" style="font-weight:initial"> - {{ monthYear(prevMeetingDate) }}</span></h3>
+    <br/><br/>
+    <h3>ANNOUNCEMENTS</h3>
+    <br/><br/>
+    <h3>WORK LOAD</h3>
+      <ul ng-if="projectManagers.length > 0">
+        <li ng-repeat="tpm in projectManagers | orderBy:'name'">
+          {{ tpm.name }} - {{ tpm.numRecords }} record<span ng-if="tpm.numRecords > 1">s</span>
+        </li>
+      </ul>
+    <br/><br/>
+    <h3>MEMBERSHIP</h3>
+    <br/><br/>
+    <h3>STATUS REPORTS</h3>
+    <div ng-if="prevMeetingDate" class="revisionItem">
+      <br/>
+      <b>Letter Ballots</b>
+      <p>
+        The following is a list of the items which were balloted since {{ monthYear(prevMeetingDate) || "the last meeting" }}:
+      </p>
+
+      <!-- js/agenda/recentballots.directive.tpl.html -->
+      <recentballots included-records="includedRecords" get-recent-ballots="getRecentBallots"></recentballots>
+
+    </div>
+    <br/><br/>
+    <div ng-if="includedRecords.entiredoc.length > 0">
+      <h3>ENTIRE DOCUMENT</h3>
+
+      <!-- js/agenda/entiredocument.directive.tpl.html -->
+      <entiredocument class="gapTop revisionItem" r="r" remove="remove" month-year="monthYear" ng-repeat="r in includedRecords.entiredoc | orderBy: ['level','record']"></entiredocument>
+
+      <br/><br/>
+    </div>
+    <div ng-if="includedRecords.codecase.length > 0">
+      <h3>CODE CASES</h3>
+
+      <!-- js/agenda/codecase.directive.tpl.html -->
+      <revision class="gapTop revisionItem" month-year="monthYear" ng-repeat="r in includedRecords.codecase | orderBy: ['level','record']" r="r" t="recdirectivetools" d="{{meetingDate}}" typ="codecase"></revision>
+
+      <br/><br/>
+    </div>
+    <div ng-if="includedRecords.component.length > 0">
+      <h3>REVISION ITEMS</h3>
+
+      <!-- js/agenda/revision.directive.tpl.html -->
+      <revision class="gapTop revisionItem" ng-repeat="r in includedRecords.component | orderBy: ['level','record']" r="r" t="recdirectivetools" d="{{meetingDate}}" typ="component"></revision>
+
+      <br/><br/>
+    </div>
+    <div ng-if="includedRecords.interpretation.length > 0">
+      <h3>INTERPRETATIONS</h3>
+
+      <!-- js/agenda/revision.directive.tpl.html -->
+      <interpretation class="gapTop revisionItem" r="r" t="recdirectivetools" remove="remove" month-year="monthYear" ng-repeat="r in includedRecords.interpretation | orderBy: ['level','record']"></interpretation>
+
+      <br/><br/>
+    </div>
+    <h3>NEW BUSINESS</h3>
+    <br/><br/>
+    <h3>NEXT MEETING</h3>
+    <br/><br/>
+    <h3>ADJOURNMENT</h3>
+    <br/><br/>
+    Respectfully Submitted,
+    <br/><br/>
+    <div>{{ userName }}</div>
+    <div>{{ userEmail }}</div>
+    <div>{{ userPhone }}</div>
+
+  </div>
+  <div id="tmp" style="display:none;"></div>
+</body>
+<script src="js/services.js"></script>
+<script src="js/agenda/agenda.js"></script>
+<script src="js/agenda/directives.js"></script>
+</html>

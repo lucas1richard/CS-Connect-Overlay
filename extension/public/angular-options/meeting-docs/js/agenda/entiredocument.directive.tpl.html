@@ -1,0 +1,34 @@
+<div class="revisionItem">
+  <button ng-click="remove(r, 'entiredoc')" class="btn btn-default btn-xs"><span class="text-danger">Remove {{ r.record }}</span></button>
+  <h4>
+    <a target="_blank" ng-href="https://cstools.asme.org/csconnect/SearchAction.cfm?TrackingNumber={{r.record.split('-')[1]}}&YearOpened={{r.record.split('-')[0]}}&NoToolbar=yes">{{ r.record }}</a>
+     - {{ r.supercedes }}
+  </h4>
+  <div class="extraRecordInfo">
+    <table>
+      <tr>
+        <td style="width:600px">
+          Project Manager:
+          <a class="lookNormal" ng-href="{{createEmail(r)}}">{{ r.tpm }}</a>
+          <div ng-if="r.projectTeam">
+            Project Team:
+            {{ r.projectTeam }}
+          </div>
+        </td>
+        <td style="width:200px; text-align:right" ng-if="r.proposalFile">Page: <b><u>#-#</u></b></td>
+      </tr>
+    </table>
+    <div ng-if="r.history.length > 10">
+      {{ r.history }}
+    </div>
+    <br/>
+    <div>
+      <i style="text-decoration:underline">{{ monthYear(meetingDate) || "Current Status" }}:</i> 
+      <span ng-if="!r.proposalFile">No proposal file.</span>
+      Last updated {{ monthYear(r.updated, true) }}.
+      {{ r.level }}.
+      <span ng-if="r.notes">{{ r.notes }}.</span>
+    </div>
+  </div>
+  <br/>
+</div>

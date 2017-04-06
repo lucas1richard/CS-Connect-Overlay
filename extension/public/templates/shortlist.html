@@ -1,0 +1,33 @@
+<div id="shortList">
+	<p class="tip">
+		The C&amp;S Connect fields for committee selection under the Staff Tab and VCC Tab will include this list at the top so you can find them more quickly.<br/><br/>
+		Begin typing the committee name into the input and it will autocomplete. If you can't find your committee by typing the name, please check the full committee list provided on this page. You can copy and paste the name.
+	</p>
+	<button class="btn btn-primary" id="saveCommittees" ng-click="save()">Save</button>
+	<input ng-model="newCommittee" class="form-control" placeholder="Add New Committee" />
+	<ul ng-if="checkMatch(newCommittee)" class="drop-options">
+	    <li ng-repeat="c in allCommittees | filter : newCommittee | orderBy:'committee'" ng-click="complete(c)">{{c.committee}}</li>
+	</ul>
+	<div>
+		<p>
+			<label ng-style="checkStyle()">Modify Order and Indention <input type="checkbox" style="display:none" ng-model="enableModify" ng-init="enableModify=false" /></label>
+		</p>
+	</div>
+	<div class="list-group">
+		<div class="list-group-item" ng-repeat="s in shortlist" ng-style="addStyle(s)">
+
+			<button class="btn btn-xs btn-default" ng-click="removeCommittee(s)">
+				<span class="glyphicon glyphicon-remove-sign" style="color:red"></span>
+			</button>
+
+			<span class="btn-group" ng-if="enableModify">
+				<button ng-if="$index > 0" class="btn btn-xs btn-default" type="button" ng-click="moveUp(s)"><span class="glyphicon glyphicon-arrow-up"></span></button>
+
+				<button ng-if="$index < shortlist.length-1" class="btn btn-xs btn-default" type="button" ng-click="moveDown(s)"><span class="glyphicon glyphicon-arrow-down"></span></button>
+
+				<button class="btn btn-xs btn-default" type="button" ng-click="addIndent(s)"><span class="glyphicon glyphicon-arrow-right"></span></button>
+			</span>
+			<b ng-bind="s.committee" ></b>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PDH Attendance</title>
+  <script src="../angular.min.js"></script>
+  <script src="js/services.js"></script>
+  <link rel="stylesheet" href="css/attendance.css">
+  <link rel="stylesheet" href="css/printLandscape.css">
+</head>
+<body ng-app="pdh" ng-controller="pdhCtrl">
+  
+  <input type="text" placeholder="Committee" ng-model="committee" />
+  <ul ng-if="committee" class="drop-options">
+      <li ng-repeat="c in allCommittees | filter : committee" ng-click="complete(c);">{{c.committee}}</li>
+  </ul>
+  <input type="date" ng-model="date" />
+  <span class="hide-print">Start time:</span>
+  <input type="time" ng-model="starttime" />
+  <span class="hide-print">End time:</span>
+  <input type="time" ng-model="endtime" />
+  <span class="hide-print">Total breaks (hr):</span>
+  <input type="number" ng-model="totalbreaks" min="0" max="2" step="0.01" />
+
+  <br/>
+  <textarea id="description" ng-model="description" rows="5" style="width:900px" placeholder="Meeting Description"></textarea>
+  <br/>
+  <a href="#" id="saveDesc" ng-click="saveDescription(selectedcommittee.num, description);">Save Description</a>
+  <div id="pdh-main">
+    <div style="clear:both; height:120px;">
+      <img src="img/letterhead-left.png" style="float:left" />
+      <img src="img/letterhead-right.png" style="float:right" />
+    </div>
+    <div class="clear:both">
+      <h4 class="text-center topheader">Meeting of the {{ selectedcommittee.committee }} <span ng-if="!selectedcommittee" style="background-color:yellow">[COMMITTEE]</span></h4>
+      <div>
+        <b>Date:</b>
+        <span ng-if="!date">_____________</span>
+        <span ng-bind="date.toLocaleDateString()" style="text-decoration:underline"></span>
+        <br/>
+        <br/>
+        <b>Time Duration:</b>
+        <span ng-if="!starttime">_________</span>
+        <span ng-bind="realTime(starttime)" style="text-decoration:underline"></span>
+        <span> - </span>
+        <span ng-if="!endtime">_________</span>
+        <span ng-bind="realTime(endtime)" style="text-decoration:underline"></span>
+        <span ng-if="starttime" ng-if="endtime" ng-class="{highlight:endtime < starttime}">({{ timeDiff(starttime, endtime); }} hr)</span>
+        <br/>
+        <br/>
+        <b>Total Breaks (hr):</b>
+        <span ng-if="!totalbreaks">_______</span>
+        <span ng-bind="totalbreaks" style="text-decoration:underline;"></span>
+        <span ng-if="totalbreaks"> hr</span>
+        <br/>
+        <br/>
+        <b>Total Meeting Time:</b>
+        <span ng-if="!timeDiff(starttime, endtime)">_______</span>
+        <span ng-if="timeDiff(starttime, endtime)" style="text-decoration:underline;">{{ timeDiff(starttime, endtime) - totalbreaks }} hr</span>
+      </div>
+
+      <div>
+        <br/>
+        {{ description }}
+      </div>
+      <div>
+        <table border=1 id="pdhAttendance">
+          <tr>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Location of P.E. Registration</th>
+            <th>Affiliation</th>
+          </tr>
+          <tr ng-repeat="i in [0,1,2,3,4,5,6]">
+            <td>
+              <input type="text" style="border:0px solid white; width:250px; height:100%;" />
+            </td>
+            <td>
+              <input type="text" style="border:0px solid white; width:350px; height:100%;" />
+            </td>
+            <td>
+              <input type="text" style="border:0px solid white; width:150px; height:100%;" />
+            </td>
+            <td>
+              <input type="text" style="border:0px solid white; width:250px; height:100%;" />
+            </td>
+        </table>
+      </div>
+      <div>
+        <input id="fileInp" type="file" accept=".jpg, .png, .jpeg, .gif, .pcd" /><br/>
+        <img id="signature" height="38" width="100" src="#" style="display:none" /><br/>
+        <div id="tmpSig" style="height:40px"></div>
+        {{ staffName }} <br/>
+        ASME Staff <br/>
+        {{ staffEmail }} <br/>
+        {{ staffPhone }}
+      </div>
+    </div>
+  </div>
+</body>
+<script src="js/pdh.js"></script>
+</html>
