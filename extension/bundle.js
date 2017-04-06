@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 19);
+/******/ 	return __webpack_require__(__webpack_require__.s = 21);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10761,7 +10761,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = replaceNavBar;
 
-var _angular = __webpack_require__(18);
+var _angular = __webpack_require__(3);
 
 var _angular2 = _interopRequireDefault(_angular);
 
@@ -10814,6 +10814,14 @@ function replaceNavBar() {
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
+__webpack_require__(20);
+module.exports = angular;
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
 
@@ -10832,7 +10840,7 @@ function formatAS11() {
 }
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10858,7 +10866,7 @@ function formatAdvancedRecordSearch() {
 }
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10973,7 +10981,7 @@ function formatBSR9() {
 }
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11100,7 +11108,7 @@ function formatCommitteePage() {
 }
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11272,7 +11280,207 @@ function formatHomePage() {
 }
 
 /***/ }),
-/* 8 */
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = formatMemberBallotClosure;
+
+var _utils = __webpack_require__(0);
+
+/*
+
+  This function counts/summarizes the voting tally for each member and committee on the ballot.
+
+*/
+
+function formatMemberBallotClosure() {
+
+  (0, _utils.makePageSmall)(); // makePageSmall() is located in script.js
+
+  // Do nothing if the ballot page is at the final stage
+  if (document.querySelector('#FinalStatus > tbody > tr:nth-child(2) > td:nth-child(2) > input[type="Radio"]:nth-child(1)')) {
+    return;
+  }
+
+  var closingRemarksArea = document.querySelector('[name=ClosingRemarks]');
+  var closingTxt = [];
+  var committee, currentlyVoting, currentRow;
+  var members;
+  var nextRow;
+  var proposedMembership;
+  var votesTables = document.querySelectorAll('.DetailPage');
+  var votingResultsArea = document.querySelector('[name=VotingResults]');
+  var txtToDisplay = [];
+
+  // Loop through each table which displays the vote tally
+  for (var j = 5; j < votesTables.length; j++) {
+    members = {};
+    currentlyVoting = votesTables[j];
+    committee = votesTables[j].previousSibling.textContent.replace(/\t/g, '').replace(/\n/g, '');
+    if (committee.charAt(0) === '-') committee = committee.replace('-', '');
+
+    for (var i = 1; i < currentlyVoting.rows.length; i += 2) {
+      proposedMembership = currentlyVoting.rows[i].children[0].innerText;
+      currentRow = currentlyVoting.rows[i];
+      nextRow = currentlyVoting.rows[i + 1];
+
+      members[proposedMembership] = {
+        approved: getStatArr(1),
+        disapproved: getStatArr(2),
+        abstain: getStatArr(3),
+        notVoting: getStatArr(4),
+        notReturned: getStatArr(5),
+        votingmembers: parseInt(currentlyVoting.rows[i + 1].children[1].innerText, 10) + parseInt(currentlyVoting.rows[i + 1].children[3].innerText, 10) + parseInt(currentlyVoting.rows[i + 1].children[5].innerText, 10)
+      };
+    }
+
+    Object.keys(members).forEach(function (member) {
+      if (members[member].approved) {
+        var outArr = [member + ':', committee, members[member].approved[0] + ' Approved', showStat('disapproved', 'Disapproved', member), showStat('abstain', 'Abstain', member), showStat('notVoting', 'Not Voting', member), showStat('notReturned', 'Not Returned', member)];
+
+        txtToDisplay.push(outArr.join('\n'));
+
+        if (isapproved(member)) {
+          closingTxt.push(member + ' was approved by ' + committee);
+        } else {
+          closingTxt.push(member + ' was not approved by ' + committee);
+        }
+      }
+    });
+  }
+
+  closingRemarksArea.value = closingTxt.join('\n');
+  votingResultsArea.value = txtToDisplay.join('\n');
+
+  resizeResultsTxtArea();
+
+  overlay.saveBallotClosure('membership');
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////
+
+  function getStatArr(idx) {
+    // Closure is dependent on context
+    return [nextRow.children[idx].innerText, currentRow.children[idx].innerText];
+  }
+
+  function isapproved(name) {
+    return parseFloat(members[name].approved[0]) / parseFloat(members[name].votingmembers) >= 0.5;
+  }
+
+  function resizeResultsTxtArea() {
+    var numRows = votingResultsArea.value.split('\n').length;
+    votingResultsArea.setAttribute('rows', numRows);
+    numRows = closingRemarksArea.value.split('\n').length;
+    closingRemarksArea.setAttribute('rows', numRows);
+  }
+
+  function showStat(stat, txt, member) {
+    // Closure is dependent on context
+    var outTxt;
+    outTxt = members[member][stat][0] + ' ' + txt + ' ';
+    if (parseInt(members[member][stat][0], 10) > 0) {
+      outTxt += '(' + members[member][stat][1] + ')';
+    }
+    return outTxt;
+  }
+}
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = formatNewRecirculationBallot;
+
+var _angular = __webpack_require__(3);
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _utils = __webpack_require__(0);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function formatNewRecirculationBallot() {
+  (0, _utils.makePageSmall)();
+
+  // Cache DOM
+  var dateclosed = document.getElementById('DateClosed');
+  var descriptionArea = document.querySelector('[name=Description]');
+  var explanationArea = document.querySelector('[name=Explanation]');
+  var fakeExplanation = document.createElement('textarea');
+  var remarksArea = document.querySelector('[name=Remarks]');
+
+  // Two week ballot
+  dateclosed.value = (0, _utils.dateInput)(14);
+
+  if (document.querySelector('.pagehdg').innerText.search('Recirculate Component Ballot Form') > -1) {
+
+    // Modify ballot description and opening remarks
+    var desc = descriptionArea.value;
+    desc = desc.replace('first consideration', 'recirculation');
+    desc = desc.replace('Four week', 'Two week');
+    descriptionArea.value = desc;
+    remarksArea.value = desc;
+
+    // Setup the explanation field to work with Angular
+    explanationArea.innerText = '{{staffComment}}\n\n{{recircStatement}}';
+    explanationArea.style.display = 'none';
+
+    // Create a dummy explanation field to pose as the real one
+    fakeExplanation.className = 'form-control';
+    fakeExplanation.rows = 3;
+    fakeExplanation.setAttribute('ng-model', 'staffComment');
+
+    explanationArea.parentNode.appendChild(fakeExplanation);
+
+    // This is the full statement provided by Bill Berger
+    var recircStatement = 'Votes on this recirculation ballot shall be based upon review of unresolved disapproved votes, public review objections, and/or substantive supervisory board comments and the related responses, as well as any revisions to the proposal. Disapproved votes shall be limited to:\n\n1) support of unresolved first consideration disapproved votes, unresolved Public Review objections and/or substantive supervisory board comments\n2) disagreement with any changes introduced to the proposal from the previously balloted proposal.\n\nIn those cases in which a disapproved vote on a recirculation ballot is not based on this criteria, the vote will be recorded as "disapproved without comment", and will be considered for a future proposal.\n\nIf you voted on the first consideration ballot, and do not wish to change your vote for this recirculation ballot, no response is necessary. Your vote will remain the same.\nIf you voted on the first consideration ballot and wish to change your vote based on the criteria above, you may do so by recording your new vote.\nIf you did not cast a vote in the previous ballot, you may take this opportunity to register your vote. All disapproved votes and comments shall fulfill the same criteria as stated above.';
+
+    var statementdivheader = function () {
+      var h4 = document.createElement('b');
+      (0, _utils.addCSS)(h4, { display: 'block', marginLeft: '20px', marginTop: '20px' });
+      var u = document.createElement('u');
+      u.innerText = 'Do not copy this to the explanation area. It will be added later.';
+      h4.appendChild(u);
+      return h4;
+    }();
+    explanationArea.parentNode.appendChild(statementdivheader);
+
+    var statementdiv = function () {
+      var div = document.createElement('div');
+      div.setAttribute('id', 'recircStatement');
+      div.style.margin = '20px';
+      div.innerText = recircStatement;
+      return div;
+    }();
+    explanationArea.parentNode.appendChild(statementdiv);
+
+    // Handle adding the recirculation statement when the ballot is created
+    // Add angular to the document
+    _angular2.default.module('recirc', []).controller('recircController', function ($scope) {
+      $scope.recircStatement = recircStatement;
+      $scope.staffComment = '';
+    });
+    (0, _utils.addAngular)(document.body, 'recirc', 'recircController');
+    _angular2.default.bootstrap(document.body, ['recirc']);
+  }
+  dateclosed.parentElement.setAttribute('class', 'form form-inline');
+  dateclosed.setAttribute('class', 'form-control');
+}
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11537,7 +11745,7 @@ function formatOpenBallots() {
 } // End formatOpenBallots()
 
 /***/ }),
-/* 9 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11687,7 +11895,7 @@ function formatRecordSearchResults() {
 } // End formatRecordSearchResults()
 
 /***/ }),
-/* 10 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11725,7 +11933,7 @@ function formatSearch() {
 }
 
 /***/ }),
-/* 11 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11748,7 +11956,7 @@ function formatStaff() {
 }
 
 /***/ }),
-/* 12 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11782,7 +11990,7 @@ function formatUpdateInterpretationRecord() {
 }
 
 /***/ }),
-/* 13 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11904,7 +12112,7 @@ function monitorForAttachments() {
 }
 
 /***/ }),
-/* 14 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12218,7 +12426,7 @@ function removeNones(TableSelector) {
 }
 
 /***/ }),
-/* 15 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12273,7 +12481,7 @@ function generalCSSChanges(item) {
 }
 
 /***/ }),
-/* 16 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12577,7 +12785,7 @@ function viewInterp() {
 }
 
 /***/ }),
-/* 17 */
+/* 20 */
 /***/ (function(module, exports) {
 
 /**
@@ -45954,33 +46162,25 @@ $provide.value("$locale", {
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
 
 /***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(17);
-module.exports = angular;
-
-
-/***/ }),
-/* 19 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _viewInterp = __webpack_require__(16);
+var _viewInterp = __webpack_require__(19);
 
 var _viewInterp2 = _interopRequireDefault(_viewInterp);
 
-var _generalCSSChanges = __webpack_require__(15);
+var _generalCSSChanges = __webpack_require__(18);
 
 var _generalCSSChanges2 = _interopRequireDefault(_generalCSSChanges);
 
-var _formatCommitteePage = __webpack_require__(6);
+var _formatCommitteePage = __webpack_require__(7);
 
 var _formatCommitteePage2 = _interopRequireDefault(_formatCommitteePage);
 
-var _formatOpenBallots = __webpack_require__(8);
+var _formatOpenBallots = __webpack_require__(11);
 
 var _formatOpenBallots2 = _interopRequireDefault(_formatOpenBallots);
 
@@ -45988,51 +46188,51 @@ var _replaceNavBar = __webpack_require__(2);
 
 var _replaceNavBar2 = _interopRequireDefault(_replaceNavBar);
 
-var _formatSearch = __webpack_require__(10);
+var _formatSearch = __webpack_require__(13);
 
 var _formatSearch2 = _interopRequireDefault(_formatSearch);
 
-var _formatHomePage = __webpack_require__(7);
+var _formatHomePage = __webpack_require__(8);
 
 var _formatHomePage2 = _interopRequireDefault(_formatHomePage);
 
-var _formatVCC = __webpack_require__(13);
+var _formatVCC = __webpack_require__(16);
 
 var _formatVCC2 = _interopRequireDefault(_formatVCC);
 
-var _formatStaff = __webpack_require__(11);
+var _formatStaff = __webpack_require__(14);
 
 var _formatStaff2 = _interopRequireDefault(_formatStaff);
 
-var _formatAS = __webpack_require__(3);
+var _formatAS = __webpack_require__(4);
 
 var _formatAS2 = _interopRequireDefault(_formatAS);
 
-var _formatViewComponentRecord = __webpack_require__(14);
+var _formatViewComponentRecord = __webpack_require__(17);
 
 var _formatViewComponentRecord2 = _interopRequireDefault(_formatViewComponentRecord);
 
-var _formatUpdateInterpretationRecord = __webpack_require__(12);
+var _formatUpdateInterpretationRecord = __webpack_require__(15);
 
 var _formatUpdateInterpretationRecord2 = _interopRequireDefault(_formatUpdateInterpretationRecord);
 
-var _formatAdvancedRecordSearch = __webpack_require__(4);
+var _formatAdvancedRecordSearch = __webpack_require__(5);
 
 var _formatAdvancedRecordSearch2 = _interopRequireDefault(_formatAdvancedRecordSearch);
 
-var _formatRecordSearchResults = __webpack_require__(9);
+var _formatRecordSearchResults = __webpack_require__(12);
 
 var _formatRecordSearchResults2 = _interopRequireDefault(_formatRecordSearchResults);
 
-var _formatBSR = __webpack_require__(5);
+var _formatBSR = __webpack_require__(6);
 
 var _formatBSR2 = _interopRequireDefault(_formatBSR);
 
-var _formatMemberBallotClosure = __webpack_require__(20);
+var _formatMemberBallotClosure = __webpack_require__(9);
 
 var _formatMemberBallotClosure2 = _interopRequireDefault(_formatMemberBallotClosure);
 
-var _formatNewRecirculationBallot = __webpack_require__(21);
+var _formatNewRecirculationBallot = __webpack_require__(10);
 
 var _formatNewRecirculationBallot2 = _interopRequireDefault(_formatNewRecirculationBallot);
 
@@ -46054,7 +46254,7 @@ chrome.storage.sync.get({
 
   [{ term: 'Advanced Record Search', fn: _formatAdvancedRecordSearch2.default },
   // { term: 'Ballots',                       fn: overlay.formatSearchBallots },
-  // { term: 'New Membership Ballot',         fn: overlay.formatNewMemberBallot },
+  { term: 'New Membership Ballot', fn: formatNewMemberBallot },
   // { term: 'New Component Ballot',          fn: overlay.formatNewComponentBallot },
   // { term: 'New Board Procedural Ballot',   fn: overlay.formatNewComponentBallot },
   // { term: 'New Entire Document Ballot',    fn: overlay.formatNewEntireDocumentBallot },
@@ -46092,206 +46292,6 @@ chrome.storage.sync.get({
     (0, _replaceNavBar2.default)();
   }
 });
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = formatMemberBallotClosure;
-
-var _utils = __webpack_require__(0);
-
-/*
-
-  This function counts/summarizes the voting tally for each member and committee on the ballot.
-
-*/
-
-function formatMemberBallotClosure() {
-
-  (0, _utils.makePageSmall)(); // makePageSmall() is located in script.js
-
-  // Do nothing if the ballot page is at the final stage
-  if (document.querySelector('#FinalStatus > tbody > tr:nth-child(2) > td:nth-child(2) > input[type="Radio"]:nth-child(1)')) {
-    return;
-  }
-
-  var closingRemarksArea = document.querySelector('[name=ClosingRemarks]');
-  var closingTxt = [];
-  var committee, currentlyVoting, currentRow;
-  var members;
-  var nextRow;
-  var proposedMembership;
-  var votesTables = document.querySelectorAll('.DetailPage');
-  var votingResultsArea = document.querySelector('[name=VotingResults]');
-  var txtToDisplay = [];
-
-  // Loop through each table which displays the vote tally
-  for (var j = 5; j < votesTables.length; j++) {
-    members = {};
-    currentlyVoting = votesTables[j];
-    committee = votesTables[j].previousSibling.textContent.replace(/\t/g, '').replace(/\n/g, '');
-    if (committee.charAt(0) === '-') committee = committee.replace('-', '');
-
-    for (var i = 1; i < currentlyVoting.rows.length; i += 2) {
-      proposedMembership = currentlyVoting.rows[i].children[0].innerText;
-      currentRow = currentlyVoting.rows[i];
-      nextRow = currentlyVoting.rows[i + 1];
-
-      members[proposedMembership] = {
-        approved: getStatArr(1),
-        disapproved: getStatArr(2),
-        abstain: getStatArr(3),
-        notVoting: getStatArr(4),
-        notReturned: getStatArr(5),
-        votingmembers: parseInt(currentlyVoting.rows[i + 1].children[1].innerText, 10) + parseInt(currentlyVoting.rows[i + 1].children[3].innerText, 10) + parseInt(currentlyVoting.rows[i + 1].children[5].innerText, 10)
-      };
-    }
-
-    Object.keys(members).forEach(function (member) {
-      if (members[member].approved) {
-        var outArr = [member + ':', committee, members[member].approved[0] + ' Approved', showStat('disapproved', 'Disapproved', member), showStat('abstain', 'Abstain', member), showStat('notVoting', 'Not Voting', member), showStat('notReturned', 'Not Returned', member)];
-
-        txtToDisplay.push(outArr.join('\n'));
-
-        if (isapproved(member)) {
-          closingTxt.push(member + ' was approved by ' + committee);
-        } else {
-          closingTxt.push(member + ' was not approved by ' + committee);
-        }
-      }
-    });
-  }
-
-  closingRemarksArea.value = closingTxt.join('\n');
-  votingResultsArea.value = txtToDisplay.join('\n');
-
-  resizeResultsTxtArea();
-
-  overlay.saveBallotClosure('membership');
-
-  ///////////////////////////////////////////////////////////////////////////////////////////////
-
-  function getStatArr(idx) {
-    // Closure is dependent on context
-    return [nextRow.children[idx].innerText, currentRow.children[idx].innerText];
-  }
-
-  function isapproved(name) {
-    return parseFloat(members[name].approved[0]) / parseFloat(members[name].votingmembers) >= 0.5;
-  }
-
-  function resizeResultsTxtArea() {
-    var numRows = votingResultsArea.value.split('\n').length;
-    votingResultsArea.setAttribute('rows', numRows);
-    numRows = closingRemarksArea.value.split('\n').length;
-    closingRemarksArea.setAttribute('rows', numRows);
-  }
-
-  function showStat(stat, txt, member) {
-    // Closure is dependent on context
-    var outTxt;
-    outTxt = members[member][stat][0] + ' ' + txt + ' ';
-    if (parseInt(members[member][stat][0], 10) > 0) {
-      outTxt += '(' + members[member][stat][1] + ')';
-    }
-    return outTxt;
-  }
-}
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = formatNewRecirculationBallot;
-
-var _angular = __webpack_require__(18);
-
-var _angular2 = _interopRequireDefault(_angular);
-
-var _utils = __webpack_require__(0);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function formatNewRecirculationBallot() {
-  (0, _utils.makePageSmall)();
-
-  // Cache DOM
-  var dateclosed = document.getElementById('DateClosed');
-  var descriptionArea = document.querySelector('[name=Description]');
-  var explanationArea = document.querySelector('[name=Explanation]');
-  var fakeExplanation = document.createElement('textarea');
-  var remarksArea = document.querySelector('[name=Remarks]');
-
-  // Two week ballot
-  dateclosed.value = (0, _utils.dateInput)(14);
-
-  if (document.querySelector('.pagehdg').innerText.search('Recirculate Component Ballot Form') > -1) {
-
-    // Modify ballot description and opening remarks
-    var desc = descriptionArea.value;
-    desc = desc.replace('first consideration', 'recirculation');
-    desc = desc.replace('Four week', 'Two week');
-    descriptionArea.value = desc;
-    remarksArea.value = desc;
-
-    // Setup the explanation field to work with Angular
-    explanationArea.innerText = '{{staffComment}}\n\n{{recircStatement}}';
-    explanationArea.style.display = 'none';
-
-    // Create a dummy explanation field to pose as the real one
-    fakeExplanation.className = 'form-control';
-    fakeExplanation.rows = 3;
-    fakeExplanation.setAttribute('ng-model', 'staffComment');
-
-    explanationArea.parentNode.appendChild(fakeExplanation);
-
-    // This is the full statement provided by Bill Berger
-    var recircStatement = 'Votes on this recirculation ballot shall be based upon review of unresolved disapproved votes, public review objections, and/or substantive supervisory board comments and the related responses, as well as any revisions to the proposal. Disapproved votes shall be limited to:\n\n1) support of unresolved first consideration disapproved votes, unresolved Public Review objections and/or substantive supervisory board comments\n2) disagreement with any changes introduced to the proposal from the previously balloted proposal.\n\nIn those cases in which a disapproved vote on a recirculation ballot is not based on this criteria, the vote will be recorded as "disapproved without comment", and will be considered for a future proposal.\n\nIf you voted on the first consideration ballot, and do not wish to change your vote for this recirculation ballot, no response is necessary. Your vote will remain the same.\nIf you voted on the first consideration ballot and wish to change your vote based on the criteria above, you may do so by recording your new vote.\nIf you did not cast a vote in the previous ballot, you may take this opportunity to register your vote. All disapproved votes and comments shall fulfill the same criteria as stated above.';
-
-    var statementdivheader = function () {
-      var h4 = document.createElement('b');
-      (0, _utils.addCSS)(h4, { display: 'block', marginLeft: '20px', marginTop: '20px' });
-      var u = document.createElement('u');
-      u.innerText = 'Do not copy this to the explanation area. It will be added later.';
-      h4.appendChild(u);
-      return h4;
-    }();
-    explanationArea.parentNode.appendChild(statementdivheader);
-
-    var statementdiv = function () {
-      var div = document.createElement('div');
-      div.setAttribute('id', 'recircStatement');
-      div.style.margin = '20px';
-      div.innerText = recircStatement;
-      return div;
-    }();
-    explanationArea.parentNode.appendChild(statementdiv);
-
-    // Handle adding the recirculation statement when the ballot is created
-    // Add angular to the document
-    _angular2.default.module('recirc', []).controller('recircController', function ($scope) {
-      $scope.recircStatement = recircStatement;
-      $scope.staffComment = '';
-    });
-    (0, _utils.addAngular)(document.body, 'recirc', 'recircController');
-    _angular2.default.bootstrap(document.body, ['recirc']);
-  }
-  dateclosed.parentElement.setAttribute('class', 'form form-inline');
-  dateclosed.setAttribute('class', 'form-control');
-}
 
 /***/ })
 /******/ ]);
