@@ -162,8 +162,15 @@ export default function formatOpenBallots() {
     note.innerText = 'Ballots remain on this list for two weeks';
     head.className = 'text-center';
 
-    addCSS(head, {borderBottom: '1px solid gray', borderTop: '2px solid gray', paddingTop: '100px'});
-    addCSS(div, {margin: 'auto', maxWidth: '1200px'});
+    addCSS(head, {
+      borderBottom: '1px solid gray',
+      borderTop: '2px solid gray',
+      paddingTop: '100px'
+    });
+    addCSS(div, {
+      margin: 'auto',
+      maxWidth: '1200px'
+    });
 
     rec = rec.sort(function(aa, bb) {
         if (aa.committeeResponsible < bb.committeeResponsible) return -1;
