@@ -14,10 +14,8 @@ var threed = false;
     formatNewComponentRecord,
     formatNewEntireDocumentRecord,
     formatSearch,
-    formatSearchBallots,
     formatStaff,
     formatVCC,
-    formatViewComponentBallot,
     formatViewMemberBallot,
     formatViewEntireDocumentRecord,
     saveBallotClosure,
@@ -137,31 +135,6 @@ var threed = false;
         tmp[i].style[key] = obj[key];
       }
     });
-  }
-
-  function formatViewComponentBallot() {
-    makePageSmall();
-    $(document.getElementsByTagName('table')[0]).prepend(overlay.quickViewTool);
-
-    var record = document.querySelectorAll('#BallotInfo > tbody > tr:nth-child(2) > td:nth-child(1)')[1].innerText;
-    setTimeout(function() {
-      if (window.location.href.indexOf('SendReminder') !== -1) {
-        chrome.storage.sync.get({remindersSent: []}, reminder => {
-          for (var i = 0; i < reminder.remindersSent.length; i++) {
-            console.log(reminder.remindersSent[i]);
-            if (reminder.remindersSent[i] === record) {
-              alert('Reminder was already sent today');
-              return;
-            }
-          }
-          document.querySelector('input[name=EmailReminder]').click();
-          reminder.remindersSent.push(record);
-          chrome.storage.sync.set({remindersSent: reminder.remindersSent}, function() {
-            window.close();
-          });
-        });
-      }
-    }, 500);
   }
 
   function formatViewMemberBallot() {
@@ -302,26 +275,6 @@ var threed = false;
     mainbody.parentNode.className = 'table';
     addCSS(mainbody.parentNode, { margin: 'auto', maxWidth: '1200px' });
     appendShortList('#CommitteeList');
-  }
-
-  function formatSearchBallots() {
-    if (window.location.href.search('Ballot=') === -1) return;
-    if (document.querySelector('[type=Button]')) {
-      doTheRest();
-    } else {
-      setTimeout(doTheRest, 500);
-    }
-
-    function doTheRest() {
-      var str = document.querySelector('[type=Button]').getAttribute('onclick');
-      var ballotnum = str.substring(str.lastIndexOf('BallotNumber') + 13, str.lastIndexOf('&BallotYearOpened'));
-      var yearnum = str.substring(str.lastIndexOf('YearOpened=') + 11, str.lastIndexOf('&NoToolbar'));
-
-      window.open('https://cstools.asme.org/csconnect/NewBallotForm.cfm?check=no&BallotNumber=' + ballotnum + '&BallotYearOpened=' + yearnum + '&NoToolbar=yes');
-      setTimeout(function() {
-        window.close();
-      }, 10);
-    }
   }
 
   function formatNewEntireDocumentRecord() {

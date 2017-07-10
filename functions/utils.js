@@ -1,5 +1,8 @@
 import $ from 'jquery';
 
+/**
+ * @param {string} actualScript
+ */
 export function insertScript(actualCode) {
   var script = document.createElement('script');
   script.textContent = actualCode;
@@ -7,6 +10,7 @@ export function insertScript(actualCode) {
   script.parentNode.removeChild(script);
 }
 
+/** Reduce the width of the page */
 export function makePageSmall() {
   document.body.style.backgroundColor = '#f2f2f2';
   addCSS(document.querySelector('body > table'), {
@@ -16,6 +20,10 @@ export function makePageSmall() {
   });
 }
 
+/**
+ * @param {string/element} element
+ * @param {object} cssObj
+ */
 export function addCSS(element, cssObj) {
   if (typeof element === 'string') {
     element = document.querySelector(element);
@@ -374,3 +382,35 @@ export function joinWithCommas(arr) {
   var tmp = arr.slice(0, arr.length - 1);
   return tmp.join(', ') + ' and ' + arr.slice(-1);
 }
+
+export function space(appendTo) {
+  var textNode = document.createTextNode(' ');
+  appendTo.appendChild(textNode);
+}
+
+export function saveBallotClosure(type) {
+      var ballotNum = document.querySelectorAll('#BallotInfo > tbody > tr:nth-child(2) > td:nth-child(1)')[1].innerText || document.querySelector('#BallotInfo > tbody > tr:nth-child(2) > td:nth-child(1)').innerText;
+      var committeeResponsible = document.querySelector('#CommitteeResponsibleField').firstElementChild.text;
+      var closingRemarks = document.querySelector('textarea[name=ClosingRemarks]').value;
+      if (!type) type = 'component';
+
+      // Get recent ballots
+      chrome.storage.local.get({ recentBallots: [] }, function(res) {
+        for (var i = res.recentBallots.length - 1; i >= 0; i--) {
+          if (res.recentBallots[i].ballotNum === ballotNum) {
+            res.recentBallots.splice(i, 1);
+          }
+        }
+        res.recentBallots.push({
+          ballotNum:              ballotNum,
+          ballotType:             type,
+          closingRemarks:         closingRemarks,
+          committeeResponsible:   committeeResponsible,
+          date:                   new Date().toLocaleDateString(),
+          href:                   window.location.href,
+        });
+        chrome.storage.local.set({ recentBallots: res.recentBallots }, function() {
+          console.log('Recent Ballot Saved');
+        });
+      });
+    }

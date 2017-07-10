@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 21);
+/******/ 	return __webpack_require__(__webpack_require__.s = 27);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -92,6 +92,8 @@ exports.appendShortList = appendShortList;
 exports.addAngular = addAngular;
 exports.onlyUnique = onlyUnique;
 exports.joinWithCommas = joinWithCommas;
+exports.space = space;
+exports.saveBallotClosure = saveBallotClosure;
 
 var _jquery = __webpack_require__(1);
 
@@ -99,6 +101,9 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/**
+ * @param {string} actualScript
+ */
 function insertScript(actualCode) {
   var script = document.createElement('script');
   script.textContent = actualCode;
@@ -106,6 +111,7 @@ function insertScript(actualCode) {
   script.parentNode.removeChild(script);
 }
 
+/** Reduce the width of the page */
 function makePageSmall() {
   document.body.style.backgroundColor = '#f2f2f2';
   addCSS(document.querySelector('body > table'), {
@@ -115,6 +121,10 @@ function makePageSmall() {
   });
 }
 
+/**
+ * @param {string/element} element
+ * @param {object} cssObj
+ */
 function addCSS(element, cssObj) {
   if (typeof element === 'string') {
     element = document.querySelector(element);
@@ -487,6 +497,38 @@ function joinWithCommas(arr) {
   if (arr.length === 1) return arr[0];
   var tmp = arr.slice(0, arr.length - 1);
   return tmp.join(', ') + ' and ' + arr.slice(-1);
+}
+
+function space(appendTo) {
+  var textNode = document.createTextNode(' ');
+  appendTo.appendChild(textNode);
+}
+
+function saveBallotClosure(type) {
+  var ballotNum = document.querySelectorAll('#BallotInfo > tbody > tr:nth-child(2) > td:nth-child(1)')[1].innerText || document.querySelector('#BallotInfo > tbody > tr:nth-child(2) > td:nth-child(1)').innerText;
+  var committeeResponsible = document.querySelector('#CommitteeResponsibleField').firstElementChild.text;
+  var closingRemarks = document.querySelector('textarea[name=ClosingRemarks]').value;
+  if (!type) type = 'component';
+
+  // Get recent ballots
+  chrome.storage.local.get({ recentBallots: [] }, function (res) {
+    for (var i = res.recentBallots.length - 1; i >= 0; i--) {
+      if (res.recentBallots[i].ballotNum === ballotNum) {
+        res.recentBallots.splice(i, 1);
+      }
+    }
+    res.recentBallots.push({
+      ballotNum: ballotNum,
+      ballotType: type,
+      closingRemarks: closingRemarks,
+      committeeResponsible: committeeResponsible,
+      date: new Date().toLocaleDateString(),
+      href: window.location.href
+    });
+    chrome.storage.local.set({ recentBallots: res.recentBallots }, function () {
+      console.log('Recent Ballot Saved');
+    });
+  });
 }
 
 /***/ }),
@@ -10814,7 +10856,7 @@ function replaceNavBar() {
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(20);
+__webpack_require__(26);
 module.exports = angular;
 
 
@@ -10833,10 +10875,22 @@ exports.default = formatAS11;
 var _utils = __webpack_require__(0);
 
 function formatAS11() {
-  (0, _utils.changeCSSofAll)('.CommitteePage tr td', { padding: '0.5em' });
-  (0, _utils.doToAll)('.CommitteePage tr td', { onmouseover: 'this.style.backgroundColor = "#f2f2f2"' });
-  (0, _utils.doToAll)('.CommitteePage tr td', { onmouseleave: 'this.style.backgroundColor = "white"' });
-  (0, _utils.doToAll)('td div', { style: 'remove' });
+
+  (0, _utils.changeCSSofAll)('.CommitteePage tr td', {
+    padding: '0.5em'
+  });
+
+  (0, _utils.doToAll)('.CommitteePage tr td', {
+    onmouseover: 'this.style.backgroundColor = "#f2f2f2"'
+  });
+
+  (0, _utils.doToAll)('.CommitteePage tr td', {
+    onmouseleave: 'this.style.backgroundColor = "white"'
+  });
+
+  (0, _utils.doToAll)('td div', {
+    style: 'remove'
+  });
 }
 
 /***/ }),
@@ -10849,21 +10903,25 @@ function formatAS11() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = formatAdvancedRecordSearch;
 
 var _utils = __webpack_require__(0);
 
-function formatAdvancedRecordSearch() {
+var formatAdvancedRecordSearch = function formatAdvancedRecordSearch() {
+
   var mainbody = document.querySelector('body > table:nth-child(4) > tbody > tr:nth-child(3) > td > form > table.SearchPage');
   (0, _utils.addCSS)(document.getElementById('CommitteeList'), { height: '300px', width: '100%' });
+
   for (var i = 0; i < mainbody.rows.length; i++) {
     if (mainbody.rows[i].children[2]) mainbody.rows[i].removeChild(mainbody.rows[i].children[2]);
     if (mainbody.rows[i].children[0]) mainbody.rows[i].children[0].style.textAlign = 'right';
   }
+
   mainbody.parentNode.className = 'table';
   (0, _utils.addCSS)(mainbody.parentNode, { margin: 'auto', maxWidth: '1200px' });
   (0, _utils.appendShortList)('#CommitteeList');
-}
+};
+
+exports.default = formatAdvancedRecordSearch;
 
 /***/ }),
 /* 6 */
@@ -10882,10 +10940,10 @@ var _utils = __webpack_require__(0);
 function formatBSR9() {
 
   // Add a button to move excluded records back to associated records
-  $('[name=Select]').before('<input type="Button" value="<<" onclick="AddOption(\'ResultForm\',\'ExcludedRecord\',\'AssociatedRecordNumber\',1);" class="btn btn-default btn-xs">');
+  $('[name=Select]').before('<input type="Button" value="<<" onclick="AddOption(\'ResultForm\',\'ExcludedReco' + 'rd\',\'AssociatedRecordNumber\',1);" class="btn btn-default btn-xs">');
 
   // Balance
-  addMessages(['The committee was <u><b>not balanced</b></u>, but approval was granted to vote while the committee was unbalanced', 'This should never be selected', 'The committee was balanced'], cell(2));
+  addMessages(['The committee was <u><b>not balanced</b></u>, but approval was granted to vote w' + 'hile the committee was unbalanced', 'This should never be selected', 'The committee was balanced'], cell(2));
 
   // PINS
   addMessages(['There was a PINS, and a <u><b>deliberation took place</b></u>', 'There was a PINS, but <u><b>no deliberation</b></u>', 'There was no PINS'], cell(3));
@@ -10903,7 +10961,7 @@ function formatBSR9() {
     var input = cll.querySelector('input');
     input.addEventListener('change', function () {
       if (this.value !== '0' && this.value) {
-        errorDiv.innerHTML = 'There <u><b>were</b></u> unresolved public review objections.<br/><br/>Format the emails in chronological order, remove unnecessary emails (such as asking for a response), and include in the report.';
+        errorDiv.innerHTML = 'There <u><b>were</b></u> unresolved public review objections.<br/><br/>Format th' + 'e emails in chronological order, remove unnecessary emails (such as asking for a' + ' response), and include in the report.';
       } else if (!this.value) {
         errorDiv.innerHTML = noUnresolved;
       } else {
@@ -10916,7 +10974,10 @@ function formatBSR9() {
   (function (cll) {
     var messageSpan = document.createElement('span');
     messageSpan.className = 'text-info';
-    (0, _utils.addCSS)(messageSpan, { display: 'inline-block', maxWidth: '400px' });
+    (0, _utils.addCSS)(messageSpan, {
+      display: 'inline-block',
+      maxWidth: '400px'
+    });
     cll.appendChild(messageSpan);
 
     var inputs = cll.querySelectorAll('input');
@@ -10930,7 +10991,7 @@ function formatBSR9() {
 
     inputs[1].addEventListener('change', function () {
       if (this.value.length) {
-        messageSpan.innerHTML = 'There were unresolved objections. These are the dates of recirculation ballots to the consensus committee.';
+        messageSpan.innerHTML = 'There were unresolved objections. These are the dates of recirculation ballots t' + 'o the consensus committee.';
       } else {
         messageSpan.innerHTML = '';
       }
@@ -10938,7 +10999,7 @@ function formatBSR9() {
   })(cell(5));
 
   // Unresolved Consensus Objections
-  addMessages(['There <u><b>were unresolved objections</b></u> (attach ballot closure email to the report)', 'This should never be selected', 'There were no unresolved objections'], cell(6));
+  addMessages(['There <u><b>were unresolved objections</b></u> (attach ballot closure email to t' + 'he report)', 'This should never be selected', 'There were no unresolved objections'], cell(6));
 
   // Appeals Process
   addMessages(['There were unresolved objections, and <u><b>there was an appeal</b></u>', 'There were unresolved objections, but no appeal was submitted', 'There were no unresolved objections'], cell(7));
@@ -10949,10 +11010,10 @@ function formatBSR9() {
   // Patent Holder Statements
   addMessages(['There <u><b>were</b></u> statements from patent holders', 'There were no statements from patent holders'], cell(10));
 
-  $('[name=StaffComments]').before('<div class="text-info">State any reasons why the tally report does not match the tally on C&S Connect (usually due to the committee having delegates)</div>');
+  $('[name=StaffComments]').before('<div class="text-info">State any reasons why the tally report does not match the' + ' tally on C&S Connect (usually due to the committee having delegates)</div>');
 
   function cell(row) {
-    var elem = document.querySelector('body > table:nth-child(4) > tbody > tr:nth-child(2) > td > table:nth-child(5) > tbody > tr > td > form > p > table:nth-child(4) > tbody > tr:nth-child(' + row + ') > td:nth-child(2)');
+    var elem = document.querySelector('body > table:nth-child(4) > tbody > tr:nth-child(2) > td > table:nth-child(5) > ' + 'tbody > tr > td > form > p > table:nth-child(4) > tbody > tr:nth-child(' + row + ') > td:nth-child(2)');
 
     return elem;
   }
@@ -10968,7 +11029,11 @@ function formatBSR9() {
 
     var messageSpan = document.createElement('span');
     messageSpan.className = 'text-info';
-    (0, _utils.addCSS)(messageSpan, { display: 'inline-block', maxWidth: '400px' });
+    (0, _utils.addCSS)(messageSpan, {
+      display: 'inline-block',
+      maxWidth: '400px'
+    });
+
     cll.appendChild(messageSpan);
     var inputs = cll.querySelectorAll('input[type=Radio]');
 
@@ -11006,17 +11071,22 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function formatCommitteePage() {
   document.body.style.backgroundColor = '#f2f2f2';
-  var committeename = document.querySelector('body > table:nth-child(4) > tbody > tr:nth-child(2) > td > table:nth-child(8) > tbody > tr > td:nth-child(2) > div').innerText;
 
-  // ul comes from replaceNavBar.js in overlay.navbar as a local variable
-  // $(ul).before(`<h4>${committeename}</h4>`);
+  (0, _utils.doToAll)('a', {
+    style: 'font-size:13px'
+  });
+  (0, _utils.doToAll)("[alt='Click to Update']", {
+    style: 'height:20px; width:25px;'
+  });
 
+  (0, _utils.doToAll)("[alt='Click to Delete']", {
+    style: 'height:20px; width:25px;'
+  });
 
-  (0, _utils.doToAll)('a', { style: 'font-size:13px' });
-  (0, _utils.doToAll)("[alt='Click to Update']", { style: 'height:20px; width:25px;' });
-  (0, _utils.doToAll)("[alt='Click to Delete']", { style: 'height:20px; width:25px;' });
   if (document.querySelector('body > table:nth-child(4) > tbody > tr:nth-child(3) > td > table > tbody > tr > td:nth-child(1) > table > tbody > tr:nth-child(3) > td:nth-child(4)')) {
-    (0, _utils.addCSS)('body > table:nth-child(4) > tbody > tr:nth-child(3) > td > table > tbody > tr > td:nth-child(1) > table > tbody > tr:nth-child(3) > td:nth-child(4)', { minWidth: '40px' });
+    (0, _utils.addCSS)('body > table:nth-child(4) > tbody > tr:nth-child(3) > td > table > tbody > tr > td:nth-child(1) > table > tbody > tr:nth-child(3) > td:nth-child(4)', {
+      minWidth: '40px'
+    });
   }
 
   // Brighten up the left menu and add a border to the right side
@@ -11058,14 +11128,42 @@ function formatCommitteePage() {
   }
 
   function modifyEditButtons() {
-    var upNAdd = [{ sel: "[alt='Click to Delete']", clss: 'glyphicon glyphicon-remove', color: 'red', title: 'Click to Delete' }, { sel: "[alt='Click to Update']", clss: 'glyphicon glyphicon-cog', color: 'blue', title: 'Click to Update' }, { sel: "[alt='Click to Add to this menu']", clss: 'glyphicon glyphicon-plus-sign', color: 'green', title: 'Click to Add to this menu' }, { sel: "[alt='Click to Move Down']", clss: 'glyphicon glyphicon-arrow-down', color: 'blue', title: 'Click to Move Down' }, { sel: "[alt='Click to Move Up']", clss: 'glyphicon glyphicon-arrow-up', color: 'blue', title: 'Click to Move Up' }];
+    var upNAdd = [{
+      sel: "[alt='Click to Delete']",
+      clss: 'glyphicon glyphicon-remove',
+      color: 'red',
+      title: 'Click to Delete'
+    }, {
+      sel: "[alt='Click to Update']",
+      clss: 'glyphicon glyphicon-cog',
+      color: 'blue',
+      title: 'Click to Update'
+    }, {
+      sel: "[alt='Click to Add to this menu']",
+      clss: 'glyphicon glyphicon-plus-sign',
+      color: 'green',
+      title: 'Click to Add to this menu'
+    }, {
+      sel: "[alt='Click to Move Down']",
+      clss: 'glyphicon glyphicon-arrow-down',
+      color: 'blue',
+      title: 'Click to Move Down'
+    }, {
+      sel: "[alt='Click to Move Up']",
+      clss: 'glyphicon glyphicon-arrow-up',
+      color: 'blue',
+      title: 'Click to Move Up'
+    }];
 
     upNAdd.forEach(function (config) {
       var upbtns = document.querySelectorAll(config.sel);
       upbtns.forEach(function (btn) {
         var span = document.createElement('span');
         span.className = config.clss;
-        (0, _utils.addCSS)(span, { color: config.color, fontSize: '15px' });
+        (0, _utils.addCSS)(span, {
+          color: config.color,
+          fontSize: '15px'
+        });
         btn.parentNode.appendChild(span);
         span.setAttribute('title', config.title);
         btn.parentNode.removeChild(btn);
@@ -11093,7 +11191,9 @@ function formatCommitteePage() {
       }
     });
 
-    (0, _utils.addCSS)(LeftMenu, { borderRight: '1px solid #dedede' });
+    (0, _utils.addCSS)(LeftMenu, {
+      borderRight: '1px solid #dedede'
+    });
 
     links.forEach(function (link) {
       for (var j = 0; j < 3; j++) {
@@ -11109,6 +11209,245 @@ function formatCommitteePage() {
 
 /***/ }),
 /* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = formatComponentBallotClosure;
+
+var _utils = __webpack_require__(0);
+
+function formatComponentBallotClosure() {
+
+  if (document.querySelector('[type=Radio]')) {
+    return;
+  }
+
+  (0, _utils.makePageSmall)(); // makePageSmall() is located in script.js
+
+  var ballotNum = document.querySelectorAll('#BallotInfo > tbody > tr:nth-child(2) > td:nth-child(1)')[1].innerText;
+  var ClosingRemarksArea = document.querySelector('[name=ClosingRemarks]');
+  var commentsTables = document.querySelectorAll('[name=CommitteesForReview]');
+  var VotingResultsArea = document.querySelector('[name=VotingResults]');
+
+  // Make two object of committees, the first for voting, and the second for comments
+  var commentCommittees = {};
+
+  // Get votingCommittees object and records object
+  var votingrecords = getVoting();
+
+  commentsTables.forEach(function (commentsTable) {
+
+    var committee = commentsTable.firstElementChild.firstElementChild.firstElementChild.childNodes[2].textContent.replace(/\t/g, '').replace(/\n/g, '').replace(' - ', '');
+    commentCommittees[committee] = [];
+
+    for (var i = 2; i < commentsTable.rows.length; i += 2) {
+      var proposedrecord = commentsTable.rows[i].children[0].innerText.replace(/\n/g, '');
+      var currentRow = commentsTable.rows[i];
+      var nextRow = commentsTable.rows[i + 1];
+      var individualRecords = proposedrecord.replace(/ /g, '').split(', ');
+
+      var tmp = {
+        comment: getStatArr(1, nextRow, currentRow)
+      };
+      commentCommittees[committee].push({
+        record: proposedrecord,
+        votes: [comp_showStat('comment', 'Comment', tmp)]
+      });
+
+      // Maintain a list of which records are approved/disapproved by which committees
+      individualRecords.forEach(function (record) {
+        if (!votingrecords.records[record]) votingrecords.records[record] = {};
+        if (tmp.comment[0] > 0) votingrecords.records[record][committee] = tmp.comment[0] + ' comment';
+        if (tmp.comment[0] > 1) votingrecords.records[record][committee] += 's';
+      });
+    }
+  });
+
+  var results = [];
+  // Display results
+  Object.keys(votingrecords.votingCommittees).forEach(function (key) {
+    var txt = [key];
+    for (var i = 0; i < votingrecords.votingCommittees[key].length; i++) {
+      txt.push(votingrecords.votingCommittees[key][i].votes);
+    }
+    results.push(txt.join('\n\n'));
+  });
+
+  var delimiter = '\n-------------------\n';
+
+  VotingResultsArea.value = results.join(delimiter);
+
+  var results = [];
+  if (commentsTables.length > 0) {
+    VotingResultsArea.value += delimiter;
+    Object.keys(commentCommittees).forEach(function (key) {
+      var txt = key;
+      for (var i = 0; i < commentCommittees[key].length; i++) {
+        var recordsList = (0, _utils.joinWithCommas)(commentCommittees[key][i].record.split(', ').map(function (record) {
+          return record.trim();
+        }));
+        txt += '\nRecord(s): ' + recordsList + '\n';
+        txt += commentCommittees[key][i].votes.join('\n');
+      }
+      results.push(txt);
+    });
+    VotingResultsArea.value += results.join(delimiter);
+  }
+
+  // Summarize results
+  var out = getSummaryArray();
+
+  ClosingRemarksArea.value = out.join(delimiter);
+
+  resizeResultsTxtArea();
+  saveBallotClosure();
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  function comp_showStat(stat, txt, t) {
+    if (t) tmp = t;
+    var outTxt = tmp[stat][0] + ' ' + txt + ' ';
+    if (parseInt(tmp[stat][0], 10) > 0) outTxt += '(' + tmp[stat][1] + ')';
+    return outTxt;
+  }
+
+  // Closure is dependent on context
+  function isapproved(tmp) {
+    if (parseFloat(tmp.approved[0]) / parseFloat(tmp.votingmembers) >= 2 / 3) {
+      if (ballotNum.indexOf('RC') === -1) {
+        if (parseInt(tmp.disapproved, 10) === 0) return true;
+      } else {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function getStatArr(num, nextR, currentR) {
+    if (nextR) var nextRow = nextR;
+    if (currentR) var currentRow = currentR;
+    return [nextRow.children[num].innerText, currentRow.children[num].innerText];
+  }
+
+  function resizeResultsTxtArea() {
+    var numRows = VotingResultsArea.value.split('\n').length;
+    VotingResultsArea.setAttribute('rows', numRows);
+    numRows = ClosingRemarksArea.value.split('\n').length;
+    ClosingRemarksArea.setAttribute('rows', numRows);
+  }
+
+  function getSummaryArray() {
+    var summaryArray = [];
+    Object.keys(votingrecords.records).forEach(function (key) {
+      var voteTxt = [];
+      var commentTxt = [];
+      var outTxt = 'Record ' + key + ' was \'';
+
+      Object.keys(votingrecords.records[key]).forEach(function (com) {
+        if (typeof votingrecords.records[key][com] === 'string') {
+          commentTxt.push(votingrecords.records[key][com] + ' from ' + com);
+        } else {
+          var stat = votingrecords.records[key][com] ? 'approved by the ' + com : 'disapproved by the  ' + com;
+          voteTxt.push(stat);
+        }
+      });
+
+      if (commentTxt.length > 0) {
+        outTxt += (0, _utils.joinWithCommas)(voteTxt) + ' and received ' + (0, _utils.joinWithCommas)(commentTxt);
+      } else {
+        outTxt += (0, _utils.joinWithCommas)(voteTxt);
+      }
+      summaryArray.push(outTxt);
+    });
+    return summaryArray;
+  }
+
+  function getVoting() {
+    var votesTables = document.querySelectorAll('[name=CommitteesBalloted]');
+    var records = {};
+    var votingCommittees = {};
+    votesTables.forEach(function (votesTable) {
+      // Get the committee name
+      var com = votesTable.parentNode.parentNode.parentNode.parentNode.previousSibling.textContent.replace(/\t/g, '').replace(/\n/g, '').replace('-', '');
+      votingCommittees[com] = [];
+
+      for (var i = 1; i < votesTable.rows.length; i += 2) {
+
+        var proposedrecord = votesTable.rows[i].children[0].innerText.replace(/\n/g, '');
+        var recordsList = (0, _utils.joinWithCommas)(proposedrecord.split(', ').map(function (record) {
+          return record.trim();
+        }));
+        var individualRecords = proposedrecord.replace(/ /g, '').split(', ');
+        var currentRow = votesTable.rows[i];
+        var nextRow = votesTable.rows[i + 1];
+
+        var tmp = { // variable name 'tmp' is needed in comp_showStat()
+          approved: getStatArr(1, nextRow, currentRow),
+          disapproved: getStatArr(2, nextRow, currentRow),
+          disapprovednocomment: getStatArr(3, nextRow, currentRow),
+          abstain: getStatArr(4, nextRow, currentRow),
+          notVoting: getStatArr(5, nextRow, currentRow),
+          notReturned: getStatArr(6, nextRow, currentRow),
+          votingmembers: parseInt(nextRow.children[1].innerText, 10) + parseInt(nextRow.children[2].innerText, 10) + parseInt(nextRow.children[6].innerText, 10)
+        };
+
+        votingCommittees[com].push({
+          record: proposedrecord,
+          votes: ['Record(s): ' + recordsList, tmp.approved[0] + ' Approved', comp_showStat('disapproved', 'Disapproved', tmp), comp_showStat('disapprovednocomment', 'Disapproved w/out Comment', tmp), comp_showStat('abstain', 'Abstain', tmp), comp_showStat('notVoting', 'Not Voting', tmp), comp_showStat('notReturned', 'Not Returned', tmp)].join('\n')
+        });
+
+        // Maintain a list of which records are approved/disapproved by which coms
+        individualRecords.forEach(function (rec) {
+          if (!records[rec]) records[rec] = {};
+          records[rec][com] = isapproved(tmp);
+        });
+      }
+    });
+
+    return {
+      records: records,
+      votingCommittees: votingCommittees
+    };
+  }
+
+  function saveBallotClosure() {
+    var ballotNumber = document.querySelectorAll('#BallotInfo > tbody > tr:nth-child(2) > td:nth-child(1)')[1].innerText;
+    var committeeResponsible = document.querySelector('#CommitteeResponsibleField').firstElementChild.text;
+
+    var records = getVoting();
+
+    // Get recent ballots
+    chrome.storage.local.get({
+      recentBallots: []
+    }, function (res) {
+      res.recentBallots = res.recentBallots.filter(function (ballot) {
+        return ballot.ballotNum !== ballotNumber;
+      });
+      res.recentBallots.push({
+        ballotNum: ballotNum,
+        ballotType: 'component',
+        closingRemarks: ClosingRemarksArea.value,
+        committeeResponsible: committeeResponsible,
+        date: new Date().toLocaleDateString(),
+        href: window.location.href,
+        votingrecords: records
+      });
+      chrome.storage.local.set({
+        recentBallots: res.recentBallots
+      }, function () {
+        console.log('Recent Ballot Saved');
+      });
+    });
+  }
+}
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11166,10 +11505,13 @@ function formatHomePage() {
           } else {
             insertBefore(table.rows[obj], self);
           }
-          chrome.storage.sync.set({ committeeIndexMap: indexMap() }, function () {});
+          chrome.storage.sync.set({
+            committeeIndexMap: indexMap()
+          }, function () {});
         });
 
-        // Move the link of to committee page to the first column, and remove the original column
+        // Move the link of to committee page to the first column, and remove the
+        // original column
         if (TDs[4].firstElementChild) {
           var button = TDs[4].firstElementChild;
           button.value = committee;
@@ -11181,8 +11523,12 @@ function formatHomePage() {
 
         // Remove the Expiration Year and rename buttons
         table.rows[i].removeChild(TDs[4]);
-        if (TDs[1].firstElementChild) TDs[1].firstElementChild.value = 'Ballots';
-        if (TDs[2].firstElementChild) TDs[2].firstElementChild.value = 'Records';
+        if (TDs[1].firstElementChild) {
+          TDs[1].firstElementChild.value = 'Ballots';
+        }
+        if (TDs[2].firstElementChild) {
+          TDs[2].firstElementChild.value = 'Records';
+        }
       }
 
       if (table.rows[i].querySelectorAll('th')[4]) {
@@ -11243,8 +11589,12 @@ function formatHomePage() {
   mainDiv.appendChild(mainTable);
 
   // Reorder the mainTable
-  chrome.storage.sync.get({ committeeIndexMap: [] }, function (mp) {
-    reOrder(mp.committeeIndexMap);
+  chrome.storage.sync.get({
+    committeeIndexMap: []
+  }, function (_ref) {
+    var committeeIndexMap = _ref.committeeIndexMap;
+
+    reOrder(committeeIndexMap);
   });
 
   function indexMap() {
@@ -11261,11 +11611,15 @@ function formatHomePage() {
   function insertAfter(newNode, referenceNode) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
   }
+
   function insertBefore(newNode, referenceNode) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode);
   }
+
   function reOrder(map) {
-    if (map.length === 0) return;
+    if (map.length === 0) {
+      return;
+    }
     var nmap = [];
     for (var i = 0; i < map.length; i++) {
       nmap.push(mainTable.rows[map[i]]);
@@ -11280,7 +11634,7 @@ function formatHomePage() {
 }
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11360,7 +11714,7 @@ function formatMemberBallotClosure() {
 
   resizeResultsTxtArea();
 
-  overlay.saveBallotClosure('membership');
+  (0, _utils.saveBallotClosure)('membership');
 
   ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -11392,7 +11746,497 @@ function formatMemberBallotClosure() {
 }
 
 /***/ }),
-/* 10 */
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(0);
+
+function formatNewComponentBallot() {
+  (0, _utils.makePageSmall)();
+  var descTextArea = document.querySelector('#BallotInfo > tbody > tr:nth-child(2) > td > textarea');
+  var explanationTextArea = document.querySelector('[name=Explanation]');
+
+  chrome.storage.sync.get({
+    componentballotdescription: '',
+    componentballotexplanation: ''
+  }, function (_ref) {
+    var componentballotdescription = _ref.componentballotdescription,
+        componentballotexplanation = _ref.componentballotexplanation;
+
+    descTextArea.value = componentballotdescription;
+    explanationTextArea.value = componentballotexplanation;
+  });
+
+  chrome.storage.local.get({
+    committeeGroups: {},
+    allrecords: {}
+  }, function (_ref2) {
+    var allrecords = _ref2.allrecords,
+        committeeGroups = _ref2.committeeGroups;
+
+    // Handle Committee Groups (add buttons and assign event listeners)
+    var subcommitteeTR = document.querySelectorAll('#BallotInfo > tbody > tr:nth-child(1) > th')[4];
+    var subcommitteeTD = document.createElement('div');
+    var revTR = document.querySelector('#BallotInfo > tbody > tr:nth-child(9) > td > table > tbody > tr:nth-child(2)');
+    var revTD = document.createElement('td');
+
+    var componentballot = function (records) {
+
+      var AddButton = document.querySelector('[name=Add]');
+      var AppliedRecords = document.getElementById('DeleteTrackingNumber');
+      var BallotLevel = document.getElementById('BallotLevelID');
+      var DescriptionArea = document.querySelector('[name=Description]');
+
+      function populateComponentDescription() {
+        var boardSelect = document.getElementById('BoardCommittee');
+        var standardsSelect = document.getElementById('StandardsCommittee');
+        var subSelect = document.getElementById('SubCommittee');
+        var reviewSelect = document.getElementById('ReviewSubCommittee');
+        var remarks = document.querySelector('[name=Remarks]');
+        var committee = '';
+
+        var empty = function empty(element) {
+          while (element.firstChild) {
+            element.removeChild(element.firstChild);
+          }
+        };
+
+        // Empty the committees included
+        empty(boardSelect);
+        empty(standardsSelect);
+        empty(subSelect);
+        empty(reviewSelect);
+
+        if (BallotLevel.value !== '') {
+          var str = document.querySelector('[name=CommitteeResponsibleField]').value;
+          console.log(str);
+          var subOption = document.querySelector('option[value=' + str + ']');
+          if (BallotLevel.value === '1') {
+            var boardOption = document.querySelector('option[value=' + str.slice(0, 3).concat('000000') + ']');
+            boardOption.style.backgroundColor = '#ffffe5';
+            boardOption.setAttribute('selected', 'true');
+            AddAutoCompleteOption(boardOption.value, boardOption.text, 'BoardCommittee', 5, 25);
+            committee = boardOption.text;
+          }
+          if (BallotLevel.value === '2') {
+            var standardOption = document.querySelector('option[value=' + str.slice(0, 5).concat('0000') + ']');
+            standardOption.style.backgroundColor = '#ffffe5';
+            AddAutoCompleteOption(standardOption.value, standardOption.text, 'StandardsCommittee', 5, 25);
+            committee = standardOption.text + ' Standards Committee';
+            var boards = {
+              A03000000: 'Board on Codes and Standards Operations',
+              A02000000: 'Board on Conformity Assessment',
+              O10000000: 'Board on Nuclear C&S',
+              N10000000: 'Board on Pressure Technology C&S',
+              L01000000: 'Board on Safety Codes and Standards',
+              C02000000: 'Board on Standardization and Testing'
+            };
+            // If the committee is a BPTCS committee, include BPTCS for review and comment
+            Object.keys(boards).forEach(function (num) {
+              // If the committee is a BPTCS committee, include BPTCS for review and comment
+              if (str.slice(0, 3).concat('000000') === num) {
+                AddAutoCompleteOption(num, boards[num], 'ReviewSubCommittee', 5, 25);
+              }
+            });
+          }
+          if (BallotLevel.value === '3') {
+
+            subOption.style.backgroundColor = '#ffffe5';
+            AddAutoCompleteOption(subOption.value, subOption.text, 'SubCommittee', 5, 25);
+            committee = subOption.text;
+          }
+        }
+        subOption = document.querySelector('option[value=' + str + ']');
+        DescriptionArea.value = committee + ' first consideration ballot for the following ' + subOption.text + ' record(s):';
+        remarks.value = committee + ' first consideration ballot for the following ' + subOption.text + ' record(s):';
+        for (var i = 0; i < AppliedRecords.children.length; i++) {
+          DescriptionArea.value += '\n - ' + AppliedRecords.children[i].value + ' - \'' + logrecord(AppliedRecords.children[i].text) + '\'';
+          remarks.value += '\n - ' + AppliedRecords.children[i].value + '  - \'' + logrecord(AppliedRecords.children[i].text) + '\'';
+        }
+      } // end populateComponentDescription()
+
+      function logrecord(rec) {
+        if (records[rec]) {
+          return records[rec].subject;
+        } else {
+          var temp = {};
+          chrome.storage.local.get({
+            allrecords: {}
+          }, function (_ref3) {
+            var allrecords = _ref3.allrecords;
+
+            temp = allrecords;
+          });
+          if (temp[rec]) {
+            return temp[rec].subject;
+          } else {
+            return '';
+          }
+        }
+      } // end logrecord()
+      AddButton.addEventListener('click', populateComponentDescription);
+      BallotLevel.addEventListener('change', populateComponentDescription);
+    }(allrecords);
+
+    Object.keys(committeeGroups).forEach(function (group) {
+      var btn = document.createElement('span');
+      var revbtn = document.createElement('span');
+      btn.className = 'btn btn-xs btn-danger';
+      revbtn.className = 'btn btn-xs btn-danger';
+      btn.innerText = group;
+      revbtn.innerText = group;
+      btn.committees = [];
+      revbtn.committees = [];
+      for (var i = 0; i < committeeGroups[group].length; i++) {
+        btn.committees.push(committeeGroups[group][i]);
+        revbtn.committees.push(committeeGroups[group][i]);
+      }
+      subcommitteeTD.appendChild(btn);
+      revTD.appendChild(revbtn);
+
+      (0, _utils.space)(subcommitteeTD);
+      (0, _utils.space)(revTD);
+
+      btn.addEventListener('click', function () {
+        for (var j = 0; j < this.committees.length; j++) {
+          var option = document.querySelector('option[value="' + this.committees[j].num + '"]');
+          var pnt = option.parentNode.getAttribute('id').replace('List', '');
+          pnt = pnt.replace('committee', 'Committee');
+          AddAutoCompleteOption(option.value, option.text, pnt, 5, 25);
+        }
+      });
+
+      revbtn.addEventListener('click', function () {
+        for (var j = 0; j < this.committees.length; j++) {
+          var option = document.querySelectorAll('option[value="' + this.committees[j].num + '"]')[1];
+          var pnt = option.parentNode.getAttribute('id').replace('List', '');
+          pnt = pnt.replace('committee', 'Committee');
+          AddAutoCompleteOption(option.value, option.text, pnt, 5, 25);
+        }
+      });
+    });
+    subcommitteeTR.appendChild(subcommitteeTD);
+    revTR.appendChild(revTD);
+  });
+
+  formatClosingDate();
+
+  formatTextAreas();
+}
+
+function AddAutoCompleteOption(value, text, TargetObject, maxSize, maximumNumberOfValues) {
+  var found = false;
+  var ObjectName = document.getElementById(TargetObject);
+
+  if (maximumNumberOfValues == null || ObjectName.length < maximumNumberOfValues) {
+    for (var i = 0; i < ObjectName.length; i++) {
+      if (ObjectName.options[i].value == value) {
+        found = true;
+        break;
+      } else found = false;
+    }
+    if (!found) {
+      ObjectName.options[ObjectName.length] = new Option(text, value);
+      ObjectName.options[i].selected = true;
+      if (ObjectName.size < maxSize) ObjectName.size++;
+    }
+  }
+}
+
+function formatTextAreas() {
+  var txtArea = document.getElementsByTagName('textarea');
+  for (var i = 0; i < txtArea.length; i++) {
+    txtArea[i].setAttribute('class', 'form-control');
+    txtArea[i].setAttribute('cols', '100');
+    txtArea[i].setAttribute('rows', '5');
+  }
+}
+
+function formatClosingDate() {
+  var DateClosed = document.getElementById('DateClosed');
+  DateClosed.parentElement.setAttribute('class', 'form form-inline');
+  DateClosed.setAttribute('class', 'form-control');
+  DateClosed.value = (0, _utils.dateInput)(28);
+}
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = formatNewEntireDocumentBallot;
+
+var _utils = __webpack_require__(0);
+
+function formatNewEntireDocumentBallot() {
+  var descTextArea = document.querySelector('#BallotInfo > tbody > tr:nth-child(2) > td > textarea');
+  chrome.storage.sync.get({
+    componentballotdescription: '',
+    componentballotexplanation: '',
+    committeeGroups: {}
+  }, function (_ref) {
+    var componentballotdescription = _ref.componentballotdescription,
+        componentballotexplanation = _ref.componentballotexplanation,
+        committeeGroups = _ref.committeeGroups;
+
+    descTextArea.value = componentballotdescription;
+
+    // Handle Committee Groups (add buttons and assign event listeners)
+    var subcommitteeTR = document.querySelectorAll('#BallotInfo > tbody > tr:nth-child(1) > th')[3];
+    var subcommitteeTD = document.createElement('div');
+    var revTR = document.querySelector('#BallotInfo > tbody > tr:nth-child(9) > td > table > tbody > tr:nth-child(2)');
+    var revTD = document.createElement('td');
+
+    Object.keys(committeeGroups).forEach(function (group) {
+      var btn = document.createElement('span');
+      var revbtn = document.createElement('span');
+      btn.className = 'btn btn-xs btn-danger';
+      revbtn.className = 'btn btn-xs btn-danger';
+      btn.innerText = group;
+      revbtn.innerText = group;
+      btn.committees = [];
+      revbtn.committees = [];
+      for (var i = 0; i < committeeGroups[group].length; i++) {
+        btn.committees.push(committeeGroups[group][i]);
+        revbtn.committees.push(committeeGroups[group][i]);
+      }
+      subcommitteeTD.appendChild(btn);
+      revTD.appendChild(revbtn);
+
+      (0, _utils.space)(subcommitteeTD);
+      (0, _utils.space)(revTD);
+
+      btn.addEventListener('click', function () {
+        for (var j = 0; j < this.committees.length; j++) {
+          var option = document.querySelector('option[value=\'' + this.committees[j].num + '\']');
+          var pnt = option.parentNode.getAttribute('id').replace('List', '');
+          pnt = pnt.replace('committee', 'Committee');
+          AddAutoCompleteOption(option.value, option.text, pnt, 5, 25);
+        }
+      });
+
+      revbtn.addEventListener('click', function () {
+        for (var j = 0; j < this.committees.length; j++) {
+          var option = document.querySelectorAll('option[value=\'' + this.committees[j].num + '\']')[1];
+          var pnt = option.parentNode.getAttribute('id').replace('List', '');
+          pnt = pnt.replace('committee', 'Committee');
+          AddAutoCompleteOption(option.value, option.text, pnt, 5, 25);
+        }
+      });
+    });
+    subcommitteeTR.appendChild(subcommitteeTD);
+    revTR.appendChild(revTD);
+  });
+
+  document.getElementById('DateClosed').parentElement.setAttribute('class', 'form form-inline');
+  document.getElementById('DateClosed').setAttribute('class', 'form-control');
+
+  var txtArea = document.getElementsByTagName('textarea');
+  for (var i = 0; i < txtArea.length; i++) {
+    txtArea[i].setAttribute('class', 'form-control');
+    txtArea[i].setAttribute('cols', '100');
+    txtArea[i].setAttribute('rows', '5');
+  }
+  var DATECLOSED = document.getElementById('DateClosed');
+  DATECLOSED.value = (0, _utils.dateInput)(28);
+
+  var actualCode = '(' + function () {
+    window.AddButton = document.querySelector('[name=Add]');
+    window.RemoveButton = document.querySelector('[name=Remove]');
+    window.AppliedRecords = document.getElementById('DeleteTrackingNumber');
+    window.BallotLevel = document.getElementById('BallotLevelID');
+    window.DescriptionArea = document.querySelector('[name=Description]');
+    window.AddButton.addEventListener('click', function () {
+      populateDescription();
+    });
+    window.BallotLevel.addEventListener('change', function () {
+      populateDescription();
+    });
+  } + ')();';
+  (0, _utils.insertScript)(actualCode);
+
+  var extScript = document.createElement('script');
+  extScript.innerHTML = populateDescription.toString();
+  document.body.appendChild(extScript);
+}
+
+function populateDescription() {
+  window.AddButton = document.querySelector('[name=Add]');
+  window.RemoveButton = document.querySelector('[name=Remove]');
+  window.BallotLevel = document.getElementById('BallotLevelID');
+  var DescriptionArea = document.querySelector('[name=Description]');
+  var boardSelect = document.getElementById('BoardCommittee');
+  var standardsSelect = document.getElementById('StandardsCommittee');
+  var subSelect = document.getElementById('SubCommittee');
+  var reviewSelect = document.getElementById('ReviewSubCommittee');
+  var remarks = document.querySelector('[name=Remarks]');
+  var committee = '';
+
+  // Empty the committees included
+  while (boardSelect.firstChild) {
+    boardSelect.removeChild(boardSelect.firstChild);
+  }
+  while (standardsSelect.firstChild) {
+    standardsSelect.removeChild(standardsSelect.firstChild);
+  }
+  while (subSelect.firstChild) {
+    subSelect.removeChild(subSelect.firstChild);
+  }
+  while (reviewSelect.firstChild) {
+    reviewSelect.removeChild(reviewSelect.firstChild);
+  }
+
+  if (window.BallotLevel.value !== '') {
+    var str = document.querySelector('[name=CommitteeResponsibleField]').value;
+    var BallotLevel = window.BallotLevel;
+    var subOption = document.querySelector('option[value=' + str + ']');
+    if (BallotLevel.value === '1') {
+      var boardOption = document.querySelector('option[value=' + str.slice(0, 3).concat('000000') + ']');
+      boardOption.style.backgroundColor = '#ffffe5';
+      boardOption.setAttribute('selected', 'true');
+      AddAutoCompleteOption(boardOption.value, boardOption.text, 'BoardCommittee', 5, 25);
+      committee = boardOption.text;
+    }
+    if (BallotLevel.value === '2') {
+      var standardOption = document.querySelector('option[value=' + str.slice(0, 5).concat('0000') + ']');
+      standardOption.style.backgroundColor = '#ffffe5';
+      AddAutoCompleteOption(standardOption.value, standardOption.text, 'StandardsCommittee', 5, 25);
+      committee = standardOption.text + ' Standards Committee';
+      var boards = {
+        A03000000: 'Board on Codes and Standards Operations',
+        A02000000: 'Board on Conformity Assessment',
+        O10000000: 'Board on Nuclear C&S',
+        N10000000: 'Board on Pressure Technology C&S',
+        L01000000: 'Board on Safety Codes and Standards',
+        C02000000: 'Board on Standardization and Testing'
+      };
+
+      Object.keys(boards).forEach(function (num) {
+        // If the committee is a BPTCS committee, include BPTCS for review and comment
+        if (str.slice(0, 3).concat('000000') === num) {
+          AddAutoCompleteOption(num, boards[num], 'ReviewSubCommittee', 5, 25);
+        }
+      });
+    }
+    if (BallotLevel.value === '3') {
+
+      subOption.style.backgroundColor = '#ffffe5';
+      AddAutoCompleteOption(subOption.value, subOption.text, 'SubCommittee', 5, 25);
+      committee = subOption.text;
+    }
+  }
+  subOption = document.querySelector('option[value=' + str + ']');
+  DescriptionArea.value = 'Four week ' + committee + ' first consideration ballot for the following ' + subOption.text + ' record:';
+  remarks.value = 'Four week ' + committee + ' first consideration Entire Document ballot for the following ' + subOption.text + ' record: ';
+  var record = document.querySelector('#BallotInfo > tbody > tr:nth-child(1) > td').innerText;
+  var title = document.querySelector('#BallotInfo > tbody > tr:nth-child(3) > td:nth-child(2)').innerText;
+
+  DescriptionArea.value += '\n' + record + ' - ' + title;
+  remarks.value += '\n' + record + ' - ' + title;
+}
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = formatNewMemberBallot;
+
+var _utils = __webpack_require__(0);
+
+function formatNewMemberBallot() {
+
+  (0, _utils.makePageSmall)(); // makePageSmall() is located in script.js
+
+  document.querySelector('#ProspectMemberID').parentElement.setAttribute('class', 'form form-inline');
+
+  // Cache DOM
+  var addbtns = document.querySelectorAll('[name=Add], [name=Remove]');
+  var boardCommittee = document.querySelector('#BoardCommittee');
+  var dateClosed = document.querySelector('#DateClosed');
+  var description = document.querySelector('[name=Description]');
+  var deleteProspectMemberID = document.querySelector('#DeleteProspectMemberID');
+  var prospectMemberID = document.querySelector('#ProspectMemberID');
+  var remarks = document.querySelector('[name=Remarks]');
+  var standardsCommittee = document.querySelector('#StandardsCommittee');
+  var subcommittee = document.querySelector('#SubCommittee');
+
+  prospectMemberID.addEventListener('click', newmember);
+
+  // Format date
+  dateClosed.value = (0, _utils.dateInput)(14);
+  dateClosed.parentElement.setAttribute('class', 'form form-inline');
+  dateClosed.setAttribute('class', 'form-control');
+
+  // Listen for click on add/remove committee buttons
+  addbtns.forEach(function (addbtn) {
+    addbtn.addEventListener('click', newmember);
+  });
+
+  function checkComplete() {
+    if (!deleteProspectMemberID.children[0]) return false;
+    if (!boardCommittee.children[0] && !standardsCommittee.children[0] && !subcommittee.children[0]) return false;
+    return true;
+  }
+
+  function newmember() {
+    if (checkComplete()) {
+      var committeeBalloted = { board: [], standards: [], sub: [], committees: 0 };
+      for (var i = 0; i < boardCommittee.children.length; i++) {
+        var sub = boardCommittee.children[i].innerHTML.replace(/&nbsp;/g, '').replace(/[ ][ ]- /g, '').replace(/amp;/g, '');
+        committeeBalloted.board.push(sub);
+        committeeBalloted.committees++;
+      }
+      for (var _i = 0; _i < standardsCommittee.children.length; _i++) {
+        var _sub = standardsCommittee.children[_i].innerHTML.replace(/&nbsp;/g, '').replace(/[ ][ ]- /g, '').replace(/amp;/g, '');
+        committeeBalloted.standards.push(_sub + ' Standards Committee');
+        committeeBalloted.committees++;
+      }
+      for (var _i2 = 0; _i2 < subcommittee.children.length; _i2++) {
+        var _sub2 = subcommittee.children[_i2].innerHTML.replace(/&nbsp;/g, '').replace(/[ ][ ]- /g, '').replace(/amp;/g, '');
+        committeeBalloted.sub.push(_sub2);
+        committeeBalloted.committees++;
+      }
+
+      description.value = 'Two week ' + writeCommittees() + ' membership ballot for the following:\n';
+      remarks.value = 'Two week ' + writeCommittees() + ' membership ballot for the following:\n';
+
+      for (var _i3 = 0; _i3 < deleteProspectMemberID.children.length; _i3++) {
+        var _sub3 = deleteProspectMemberID.children[_i3].innerHTML.replace(/&nbsp;/g, '').replace(/[ ][ ]- /g, '').replace(/amp;/g, '');
+
+        description.value += ' - ' + _sub3 + '\n';
+        remarks.value += ' - ' + _sub3 + '\n';
+      }
+    }
+
+    function writeCommittees() {
+      var out = '';
+      Object.keys(committeeBalloted).forEach(function (committee) {
+        if (committeeBalloted[committee].length > 0 && committee !== 'committees') {
+          out += committeeBalloted[committee].join(' and ');
+          if (committeeBalloted.committees > 1 && committee !== 'sub') out += ', ';
+        }
+      });
+      return out;
+    }
+  }
+}
+
+/***/ }),
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11480,7 +12324,7 @@ function formatNewRecirculationBallot() {
 }
 
 /***/ }),
-/* 11 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11656,8 +12500,15 @@ function formatOpenBallots() {
     note.innerText = 'Ballots remain on this list for two weeks';
     head.className = 'text-center';
 
-    (0, _utils.addCSS)(head, { borderBottom: '1px solid gray', borderTop: '2px solid gray', paddingTop: '100px' });
-    (0, _utils.addCSS)(div, { margin: 'auto', maxWidth: '1200px' });
+    (0, _utils.addCSS)(head, {
+      borderBottom: '1px solid gray',
+      borderTop: '2px solid gray',
+      paddingTop: '100px'
+    });
+    (0, _utils.addCSS)(div, {
+      margin: 'auto',
+      maxWidth: '1200px'
+    });
 
     rec = rec.sort(function (aa, bb) {
       if (aa.committeeResponsible < bb.committeeResponsible) return -1;
@@ -11745,7 +12596,7 @@ function formatOpenBallots() {
 } // End formatOpenBallots()
 
 /***/ }),
-/* 12 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11895,7 +12746,7 @@ function formatRecordSearchResults() {
 } // End formatRecordSearchResults()
 
 /***/ }),
-/* 13 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11933,7 +12784,7 @@ function formatSearch() {
 }
 
 /***/ }),
-/* 14 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11956,7 +12807,287 @@ function formatStaff() {
 }
 
 /***/ }),
-/* 15 */
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = formatUpdateComponentRecord;
+
+var _utils = __webpack_require__(0);
+
+function formatUpdateComponentRecord() {
+
+  (0, _utils.makePageSmall)(); // Improve readability, makePageSmall() is in script.js
+
+  // If record is published, update it's status
+  if (window.location.href.indexOf('CheckPublished') > -1) {
+    document.getElementById('ItemLevelID').value = 11;
+    document.querySelector('body > table > tbody > tr:nth-child(2) > td > form > input.btn.btn-primary.btn-xs').click();
+  }
+
+  var date = new Date().toLocaleDateString(); // date is referenced in addToStaffNotes()
+  var totalSummary = []; // totalSummary is referenced in addToStaffNotes()
+
+  // Cache DOM
+  var proposalTxtArea = document.querySelector('[name=Proposal]');
+  var staffNotesTxtArea = document.querySelector('[name=SCNotes]');
+  var subjectTxtArea = document.querySelector('[name=Subject]');
+  var summaryTxtArea = document.querySelector('[name=SummaryOfChanges]');
+
+  [{// Properties to add to input fieldsitem: explanationTxtArea, str: 'The explanation was updated'
+  }, {
+    item: proposalTxtArea,
+    str: 'The proposal was updated'
+  }, {
+    item: staffNotesTxtArea,
+    str: ''
+  }, {
+    item: subjectTxtArea,
+    str: 'The subject was updated'
+  }, {
+    item: summaryTxtArea,
+    str: 'The summary of changes was updated'
+  }].forEach(function (props) {
+    // Add properties, listen for changes, and report changes as appropriate
+    props.item.initial = props.item.value;
+    props.item.str = props.str;
+    props.item.addEventListener('change', function () {
+      addToStaffNotes(this.initial, this.value, this.str);
+    });
+  });
+
+  addMessageDiv(); // Warn staff that their comments will be overwritten if they're not careful
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
+  function addMessageDiv() {
+    var msgDiv = document.createElement('div');
+    msgDiv.className = 'text-danger';
+    msgDiv.style.fontSize = '12px';
+    msgDiv.innerHTML = '<span id=\'rArr\' style=\'font-weight:bold; font-size:16px;\'>&rArr;</span>\n      This field updates when you make a change to the Subject, Proposal, Explanation, Summary of Changes, or Project Manager.\n      <b>Any additional comments you add must be added after updating those fields, or your comment will be overwritten</b>';
+    staffNotesTxtArea.parentNode.insertBefore(msgDiv, staffNotesTxtArea);
+    $('#rArr').hide();
+
+    // Warning response if staff starts typing in notes field
+    staffNotesTxtArea.addEventListener('keydown', function () {
+      msgDiv.style.fontSize = '14px';
+      $('#rArr').show();
+      blink('#rArr');
+    });
+  }
+
+  function addToStaffNotes(initial, newdata, summary) {
+
+    // Don't report same change more than once
+    for (var i = 0; i < totalSummary.length; i++) {
+      if (totalSummary[i].search(summary) !== -1) {
+        totalSummary.splice(i, 1);
+        break;
+      }
+    }
+
+    // Report change only if it is actually a change
+    if (initial !== newdata) {
+      totalSummary.push(summary);
+    }
+
+    // Reset staff notes input
+    staffNotesTxtArea.value = staffNotesTxtArea.initial;
+
+    if (totalSummary.length) {
+      var beginning = '';
+
+      // Separate old notes from new notes with a line
+      if (staffNotesTxtArea.value.length) {
+        beginning = '\n-------------------------------\n';
+      }
+      if (totalSummary.length === 1) {
+        // Use a different format if changes > 1
+        beginning += date + ': ';
+      } else {
+        beginning += date + ': The following changes were made on behalf of the TPM:\n   - ';
+      }
+      staffNotesTxtArea.value += beginning + totalSummary.join('\n   - ');
+    }
+  }
+
+  function blink(element) {
+    $(element).fadeOut(700, function () {
+      $(element).fadeIn(400, blink(element));
+    });
+  }
+}
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = formatUpdateInterpretationBallot;
+
+var _utils = __webpack_require__(0);
+
+function formatUpdateInterpretationBallot() {
+  if (!document.querySelector('[name=BallotRecordStatus1]')) {
+    (0, _utils.makePageSmall)();
+
+    // Cache DOM
+    var ClosingRemarksArea = document.querySelector('[name=ClosingRemarks]');
+    var VotingResultsArea = document.querySelector('[name=VotingResults]');
+
+    // Get records included on the ballot
+    var records = createRecordsObject();
+
+    // Get voting results and closing remarks as arrays
+    var resultsArrays = buildResultsArrays();
+
+    // This should only separate committees
+    var delimiter = '\n--------------------\n';
+
+    // Display the array
+    VotingResultsArea.value = resultsArrays.votingResults.join(delimiter);
+    ClosingRemarksArea.value = resultsArrays.closingRemarks.join(delimiter);
+
+    resizeResultsTxtArea();
+
+    saveBallotClosure();
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////
+
+  function buildResultsArrays() {
+    var committee = document.querySelector('#CommitteeResponsibleField').firstElementChild.text + ' Interpretations Committee';
+    var votingResults = [];
+    var closingRemarks = [];
+
+    // records comes from createRecordsObject()
+    Object.keys(records).forEach(function (record) {
+      var temp = [committee + ':', 'Record(s): ' + record, comp_showStat('objection', 'Objection'), comp_showStat('no_objection', 'No Objection'), comp_showStat('not_voting', 'Not Voting'), comp_showStat('not_returned', 'Not Returned')].join('\n');
+
+      votingResults.push(temp);
+
+      if (isapproved(record).status) {
+        closingRemarks.push('Record ' + record + ' was approved by the ' + committee);
+      } else {
+        closingRemarks.push('Record ' + record + ' was disapproved by the ' + committee + ' because of ' + isapproved(record).reason);
+      }
+    });
+
+    return {
+      closingRemarks: closingRemarks,
+      votingResults: votingResults
+    };
+  }
+
+  function comp_showStat(stat, txt) {
+    var out = records[record][stat][0] + ' ' + txt + ' ';
+    if (parseInt(records[record][stat][0], 10) > 0) out += '(' + records[record][stat][1] + ')';
+    return out;
+  }
+
+  function createRecordsObject() {
+    var records = {};
+
+    var membersBallotedTable = document.querySelector('#MembersBalloted');
+    for (var i = 1; i < membersBallotedTable.rows.length; i += 2) {
+      var row = membersBallotedTable.rows[i];
+
+      var nextRow = membersBallotedTable.rows[i + 1];
+      var proposedrecord = row.children[0].innerText.replace(/\n/g, '');
+
+      records[proposedrecord] = {
+        objection: [textOf(nextRow.children[1]), textOf(row.children[1])],
+        no_objection: [textOf(nextRow.children[2]), textOf(row.children[2])],
+        not_voting: [textOf(nextRow.children[3]), textOf(row.children[3])],
+        not_returned: [textOf(nextRow.children[4]), textOf(row.children[4])],
+        votingmembers: parseInt(nextRow.children[1].innerText, 10) + parseInt(nextRow.children[2].innerText, 10)
+      };
+    }
+    return records;
+  }
+
+  function isapproved(name) {
+    var obj = {
+      status: true,
+      reason: null
+    };
+    if (parseInt(records[name].not_returned[0], 10) > 0) {
+      obj = {
+        status: false,
+        reason: 'insufficient participation'
+      };
+    }
+    if (parseFloat(records[name].objection[0]) > 0) {
+      obj = {
+        status: false,
+        reason: 'an objection'
+      };
+    }
+    return obj;
+  }
+
+  function resizeResultsTxtArea() {
+    var numRows = VotingResultsArea.value.split('\n').length;
+    VotingResultsArea.setAttribute('rows', numRows);
+    numRows = ClosingRemarksArea.value.split('\n').length;
+    ClosingRemarksArea.setAttribute('rows', numRows);
+  }
+
+  function textOf(elem) {
+    var out = elem.innerText.replace(/\n/g, ' ').replace(/\t/g, ' ').replace(/ ,/g, ',');
+    while (out.charAt(out.length - 1) === ' ') {
+      out = out.split('');
+      out.pop();
+      out = out.join('');
+    }
+
+    return out;
+  }
+
+  function saveBallotClosure() {
+    var ballotNum = document.querySelectorAll('#BallotInfo > tbody > tr:nth-child(2) > td:nth-child(1)')[1].innerText;
+    var committeeResponsible = document.querySelector('#CommitteeResponsibleField').firstElementChild.text;
+
+    var votingrecords = createRecordsObject();
+
+    // Get recent ballots
+    chrome.storage.local.get({
+      recentBallots: []
+    }, function (res) {
+      res.recentBallots = res.recentBallots.filter(function (ballot) {
+        return ballot.ballotNum !== ballotNum;
+      });
+
+      res.recentBallots.push({
+        ballotNum: ballotNum,
+        ballotType: 'interpretation',
+        closingRemarks: ClosingRemarksArea.value,
+        committeeResponsible: committeeResponsible,
+        date: new Date().toLocaleDateString(),
+        href: window.location.href,
+        votingrecords: votingrecords
+      });
+      chrome.storage.local.set({
+        'recentBallots': res.recentBallots
+      }, function () {
+        console.log('Recent Ballot Saved');
+      });
+    });
+  }
+}
+
+/***/ }),
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11990,7 +13121,7 @@ function formatUpdateInterpretationRecord() {
 }
 
 /***/ }),
-/* 16 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12112,7 +13243,7 @@ function monitorForAttachments() {
 }
 
 /***/ }),
-/* 17 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12426,7 +13557,7 @@ function removeNones(TableSelector) {
 }
 
 /***/ }),
-/* 18 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12481,7 +13612,7 @@ function generalCSSChanges(item) {
 }
 
 /***/ }),
-/* 19 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12785,7 +13916,7 @@ function viewInterp() {
 }
 
 /***/ }),
-/* 20 */
+/* 26 */
 /***/ (function(module, exports) {
 
 /**
@@ -46162,17 +47293,17 @@ $provide.value("$locale", {
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
 
 /***/ }),
-/* 21 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _viewInterp = __webpack_require__(19);
+var _viewInterp = __webpack_require__(25);
 
 var _viewInterp2 = _interopRequireDefault(_viewInterp);
 
-var _generalCSSChanges = __webpack_require__(18);
+var _generalCSSChanges = __webpack_require__(24);
 
 var _generalCSSChanges2 = _interopRequireDefault(_generalCSSChanges);
 
@@ -46180,7 +47311,7 @@ var _formatCommitteePage = __webpack_require__(7);
 
 var _formatCommitteePage2 = _interopRequireDefault(_formatCommitteePage);
 
-var _formatOpenBallots = __webpack_require__(11);
+var _formatOpenBallots = __webpack_require__(15);
 
 var _formatOpenBallots2 = _interopRequireDefault(_formatOpenBallots);
 
@@ -46188,19 +47319,19 @@ var _replaceNavBar = __webpack_require__(2);
 
 var _replaceNavBar2 = _interopRequireDefault(_replaceNavBar);
 
-var _formatSearch = __webpack_require__(13);
+var _formatSearch = __webpack_require__(17);
 
 var _formatSearch2 = _interopRequireDefault(_formatSearch);
 
-var _formatHomePage = __webpack_require__(8);
+var _formatHomePage = __webpack_require__(9);
 
 var _formatHomePage2 = _interopRequireDefault(_formatHomePage);
 
-var _formatVCC = __webpack_require__(16);
+var _formatVCC = __webpack_require__(22);
 
 var _formatVCC2 = _interopRequireDefault(_formatVCC);
 
-var _formatStaff = __webpack_require__(14);
+var _formatStaff = __webpack_require__(18);
 
 var _formatStaff2 = _interopRequireDefault(_formatStaff);
 
@@ -46208,11 +47339,11 @@ var _formatAS = __webpack_require__(4);
 
 var _formatAS2 = _interopRequireDefault(_formatAS);
 
-var _formatViewComponentRecord = __webpack_require__(17);
+var _formatViewComponentRecord = __webpack_require__(23);
 
 var _formatViewComponentRecord2 = _interopRequireDefault(_formatViewComponentRecord);
 
-var _formatUpdateInterpretationRecord = __webpack_require__(15);
+var _formatUpdateInterpretationRecord = __webpack_require__(21);
 
 var _formatUpdateInterpretationRecord2 = _interopRequireDefault(_formatUpdateInterpretationRecord);
 
@@ -46220,7 +47351,7 @@ var _formatAdvancedRecordSearch = __webpack_require__(5);
 
 var _formatAdvancedRecordSearch2 = _interopRequireDefault(_formatAdvancedRecordSearch);
 
-var _formatRecordSearchResults = __webpack_require__(12);
+var _formatRecordSearchResults = __webpack_require__(16);
 
 var _formatRecordSearchResults2 = _interopRequireDefault(_formatRecordSearchResults);
 
@@ -46228,13 +47359,45 @@ var _formatBSR = __webpack_require__(6);
 
 var _formatBSR2 = _interopRequireDefault(_formatBSR);
 
-var _formatMemberBallotClosure = __webpack_require__(9);
+var _formatMemberBallotClosure = __webpack_require__(10);
 
 var _formatMemberBallotClosure2 = _interopRequireDefault(_formatMemberBallotClosure);
 
-var _formatNewRecirculationBallot = __webpack_require__(10);
+var _formatNewRecirculationBallot = __webpack_require__(14);
 
 var _formatNewRecirculationBallot2 = _interopRequireDefault(_formatNewRecirculationBallot);
+
+var _formatNewEntireDocumentBallot = __webpack_require__(12);
+
+var _formatNewEntireDocumentBallot2 = _interopRequireDefault(_formatNewEntireDocumentBallot);
+
+var _formatNewMemberBallot = __webpack_require__(13);
+
+var _formatNewMemberBallot2 = _interopRequireDefault(_formatNewMemberBallot);
+
+var _formatUpdateComponentRecord = __webpack_require__(19);
+
+var _formatUpdateComponentRecord2 = _interopRequireDefault(_formatUpdateComponentRecord);
+
+var _formatUpdateInterpretationBallot = __webpack_require__(20);
+
+var _formatUpdateInterpretationBallot2 = _interopRequireDefault(_formatUpdateInterpretationBallot);
+
+var _formatNewComponentBallot = __webpack_require__(11);
+
+var _formatNewComponentBallot2 = _interopRequireDefault(_formatNewComponentBallot);
+
+var _formatComponentBallotClosure = __webpack_require__(8);
+
+var _formatComponentBallotClosure2 = _interopRequireDefault(_formatComponentBallotClosure);
+
+var _formatViewComponentBallot = __webpack_require__(28);
+
+var _formatViewComponentBallot2 = _interopRequireDefault(_formatViewComponentBallot);
+
+var _formatSearchBallots = __webpack_require__(29);
+
+var _formatSearchBallots2 = _interopRequireDefault(_formatSearchBallots);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -46252,29 +47415,18 @@ chrome.storage.sync.get({
   var pagehdg = document.querySelector('.pagehdg');
   var checkHref = true;
 
-  [{ term: 'Advanced Record Search', fn: _formatAdvancedRecordSearch2.default },
-  // { term: 'Ballots',                       fn: overlay.formatSearchBallots },
-  { term: 'New Membership Ballot', fn: formatNewMemberBallot },
-  // { term: 'New Component Ballot',          fn: overlay.formatNewComponentBallot },
-  // { term: 'New Board Procedural Ballot',   fn: overlay.formatNewComponentBallot },
-  // { term: 'New Entire Document Ballot',    fn: overlay.formatNewEntireDocumentBallot },
-  // { term: 'New Component Record',          fn: overlay.formatNewComponentRecord },
-  // { term: 'New BSR-8',                     fn: overlay.formatNewBSR8 },
+  [{ term: 'Advanced Record Search', fn: _formatAdvancedRecordSearch2.default }, { term: 'Ballots', fn: _formatSearchBallots2.default }, { term: 'New Membership Ballot', fn: _formatNewMemberBallot2.default }, { term: 'New Component Ballot', fn: _formatNewComponentBallot2.default }, { term: 'New Board Procedural Ballot', fn: _formatNewComponentBallot2.default }, { term: 'New Entire Document Ballot', fn: _formatNewEntireDocumentBallot2.default },
+  // { term: 'New Component Record',          fn: formatNewComponentRecord },
+  // { term: 'New BSR-8',                     fn: formatNewBSR8 },
   { term: 'BSR-9', fn: _formatBSR2.default },
-  // { term: 'New Entire Document Record',    fn: overlay.formatNewEntireDocumentRecord },
+  // { term: 'New Entire Document Record',    fn: formatNewEntireDocumentRecord },
   { term: 'Recirculate Component', fn: _formatNewRecirculationBallot2.default }, { term: 'Record Search Results', fn: _formatRecordSearchResults2.default },
   // // { term: 'Set Membership Options',        fn: function() { appendShortList(document.querySelector('#Committee1')); } },
-  // { term: 'Update Component Ballot',       fn: overlay.formatComponentBallotClosure },
-  // // { term: 'Update Component Record',       fn: overlay.formatUpdateComponentRecord },
-  // { term: 'Update Code Case Record',       fn: overlay.formatUpdateComponentRecord },
-  { term: 'Update Interpretations Record', fn: _formatUpdateInterpretationRecord2.default },
-  // { term: 'Update Interpretations Ballot', fn: overlay.formatUpdateInterpretationBallot },
-  { term: 'Update Membership Ballot', fn: _formatMemberBallotClosure2.default },
-  // { term: 'View Entire Document Record',   fn: overlay.formatViewEntireDocumentRecord },
-  // { term: 'View Component Ballot',         fn: overlay.formatViewComponentBallot },
-  { term: 'View Component Record', fn: _formatViewComponentRecord2.default },
-  // { term: 'View Code Case Record',         fn: overlay.formatViewCodeCaseRecord },
-  // { term: 'View Entire Document Ballot',   fn: overlay.formatViewEntireDocBallot },
+  { term: 'Update Component Ballot', fn: _formatComponentBallotClosure2.default }, { term: 'Update Component Record', fn: _formatUpdateComponentRecord2.default }, { term: 'Update Code Case Record', fn: _formatUpdateComponentRecord2.default }, { term: 'Update Interpretations Record', fn: _formatUpdateInterpretationRecord2.default }, { term: 'Update Interpretations Ballot', fn: _formatUpdateInterpretationBallot2.default }, { term: 'Update Membership Ballot', fn: _formatMemberBallotClosure2.default },
+  // { term: 'View Entire Document Record',   fn: formatViewEntireDocumentRecord },
+  { term: 'View Component Ballot', fn: _formatViewComponentBallot2.default }, { term: 'View Component Record', fn: _formatViewComponentRecord2.default },
+  // { term: 'View Code Case Record',         fn: formatViewCodeCaseRecord },
+  // { term: 'View Entire Document Ballot',   fn: formatViewEntireDocBallot },
   { term: 'View Interpretations', fn: _viewInterp2.default }].forEach(function (conf) {
     if (pagehdg && pagehdg.innerText.search(conf.term) > -1) {
       checkHref = false;
@@ -46293,5 +47445,76 @@ chrome.storage.sync.get({
   }
 });
 
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = formatViewComponentBallot;
+
+var _utils = __webpack_require__(0);
+
+function formatViewComponentBallot() {
+  (0, _utils.makePageSmall)();
+  $(document.getElementsByTagName('table')[0]).prepend(overlay.quickViewTool);
+
+  var record = document.querySelectorAll('#BallotInfo > tbody > tr:nth-child(2) > td:nth-child(1)')[1].innerText;
+  setTimeout(function () {
+    if (window.location.href.indexOf('SendReminder') !== -1) {
+      chrome.storage.sync.get({ remindersSent: [] }, function (reminder) {
+        for (var i = 0; i < reminder.remindersSent.length; i++) {
+          console.log(reminder.remindersSent[i]);
+          if (reminder.remindersSent[i] === record) {
+            alert('Reminder was already sent today');
+            return;
+          }
+        }
+        document.querySelector('input[name=EmailReminder]').click();
+        reminder.remindersSent.push(record);
+        chrome.storage.sync.set({ remindersSent: reminder.remindersSent }, function () {
+          window.close();
+        });
+      });
+    }
+  }, 500);
+}
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = formatSearchBallots;
+function formatSearchBallots() {
+  if (window.location.href.search('Ballot=') === -1) return;
+  if (document.querySelector('[type=Button]')) {
+    doTheRest();
+  } else {
+    setTimeout(doTheRest, 500);
+  }
+
+  function doTheRest() {
+    var str = document.querySelector('[type=Button]').getAttribute('onclick');
+    var ballotnum = str.substring(str.lastIndexOf('BallotNumber') + 13, str.lastIndexOf('&BallotYearOpened'));
+    var yearnum = str.substring(str.lastIndexOf('YearOpened=') + 11, str.lastIndexOf('&NoToolbar'));
+
+    window.open('https://cstools.asme.org/csconnect/NewBallotForm.cfm?check=no&BallotNumber=' + ballotnum + '&BallotYearOpened=' + yearnum + '&NoToolbar=yes');
+    setTimeout(function () {
+      window.close();
+    }, 10);
+  }
+}
+
 /***/ })
 /******/ ]);
+//# sourceMappingURL=bundle.js.map

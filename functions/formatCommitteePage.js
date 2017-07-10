@@ -1,20 +1,28 @@
-import { addCSS, doToAll } from './utils';
+import {
+  addCSS,
+  doToAll
+} from './utils';
 import replaceNavBar from './replaceNavBar';
 import $ from 'jquery';
 
 export default function formatCommitteePage() {
   document.body.style.backgroundColor = '#f2f2f2';
-  var committeename = document.querySelector('body > table:nth-child(4) > tbody > tr:nth-child(2) > td > table:nth-child(8) > tbody > tr > td:nth-child(2) > div').innerText;
 
-  // ul comes from replaceNavBar.js in overlay.navbar as a local variable
-  // $(ul).before(`<h4>${committeename}</h4>`);
+  doToAll('a', {
+    style: 'font-size:13px'
+  });
+  doToAll("[alt='Click to Update']", {
+    style: 'height:20px; width:25px;'
+  });
 
+  doToAll("[alt='Click to Delete']", {
+    style: 'height:20px; width:25px;'
+  });
 
-  doToAll('a', { style: 'font-size:13px' });
-  doToAll("[alt='Click to Update']", {style: 'height:20px; width:25px;'});
-  doToAll("[alt='Click to Delete']", {style: 'height:20px; width:25px;'});
   if (document.querySelector('body > table:nth-child(4) > tbody > tr:nth-child(3) > td > table > tbody > tr > td:nth-child(1) > table > tbody > tr:nth-child(3) > td:nth-child(4)')) {
-    addCSS('body > table:nth-child(4) > tbody > tr:nth-child(3) > td > table > tbody > tr > td:nth-child(1) > table > tbody > tr:nth-child(3) > td:nth-child(4)', { minWidth: '40px' });
+    addCSS('body > table:nth-child(4) > tbody > tr:nth-child(3) > td > table > tbody > tr > td:nth-child(1) > table > tbody > tr:nth-child(3) > td:nth-child(4)', {
+      minWidth: '40px'
+    });
   }
 
   // Brighten up the left menu and add a border to the right side
@@ -40,7 +48,7 @@ export default function formatCommitteePage() {
   function makeStaffEditsButtons() {
     var staffEdits = document.querySelector('body > table:nth-child(4) > tbody > tr:nth-child(3) > td > table > tbody > tr > td:nth-child(1) > table > tbody > tr:nth-child(1) > td');
 
-    [ 'Home', 'Modify', 'File Maintenance' ].forEach((btnTxt, i) => {
+    ['Home', 'Modify', 'File Maintenance'].forEach((btnTxt, i) => {
       if (staffEdits.children[i]) {
         staffEdits.children[i].removeChild(staffEdits.children[i].children[0]);
         staffEdits.children[i].innerText = btnTxt;
@@ -56,12 +64,36 @@ export default function formatCommitteePage() {
   }
 
   function modifyEditButtons() {
-    var upNAdd = [
-      { sel:"[alt='Click to Delete']", clss: 'glyphicon glyphicon-remove', color: 'red', title:'Click to Delete' },
-      { sel:"[alt='Click to Update']", clss: 'glyphicon glyphicon-cog', color: 'blue', title: 'Click to Update' },
-      { sel:"[alt='Click to Add to this menu']", clss: 'glyphicon glyphicon-plus-sign', color: 'green', title: 'Click to Add to this menu' },
-      { sel:"[alt='Click to Move Down']", clss: 'glyphicon glyphicon-arrow-down', color: 'blue', title: 'Click to Move Down' },
-      { sel:"[alt='Click to Move Up']", clss: 'glyphicon glyphicon-arrow-up', color: 'blue', title: 'Click to Move Up' },
+    var upNAdd = [{
+        sel: "[alt='Click to Delete']",
+        clss: 'glyphicon glyphicon-remove',
+        color: 'red',
+        title: 'Click to Delete'
+      },
+      {
+        sel: "[alt='Click to Update']",
+        clss: 'glyphicon glyphicon-cog',
+        color: 'blue',
+        title: 'Click to Update'
+      },
+      {
+        sel: "[alt='Click to Add to this menu']",
+        clss: 'glyphicon glyphicon-plus-sign',
+        color: 'green',
+        title: 'Click to Add to this menu'
+      },
+      {
+        sel: "[alt='Click to Move Down']",
+        clss: 'glyphicon glyphicon-arrow-down',
+        color: 'blue',
+        title: 'Click to Move Down'
+      },
+      {
+        sel: "[alt='Click to Move Up']",
+        clss: 'glyphicon glyphicon-arrow-up',
+        color: 'blue',
+        title: 'Click to Move Up'
+      },
     ];
 
     upNAdd.forEach(config => {
@@ -69,7 +101,10 @@ export default function formatCommitteePage() {
       upbtns.forEach(btn => {
         var span = document.createElement('span');
         span.className = config.clss;
-        addCSS(span, { color: config.color, fontSize: '15px' });
+        addCSS(span, {
+          color: config.color,
+          fontSize: '15px'
+        });
         btn.parentNode.appendChild(span);
         span.setAttribute('title', config.title);
         btn.parentNode.removeChild(btn);
@@ -97,7 +132,9 @@ export default function formatCommitteePage() {
       }
     });
 
-    addCSS(LeftMenu, { borderRight: '1px solid #dedede' });
+    addCSS(LeftMenu, {
+      borderRight: '1px solid #dedede'
+    });
 
     links.forEach(link => {
       for (var j = 0; j < 3; j++) {

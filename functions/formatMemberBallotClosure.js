@@ -1,4 +1,7 @@
-import { makePageSmall } from './utils';
+import {
+  makePageSmall,
+  saveBallotClosure
+} from './utils';
 
 /*
 
@@ -38,12 +41,12 @@ export default function formatMemberBallotClosure() {
       nextRow = currentlyVoting.rows[i + 1];
 
       members[proposedMembership] = {
-        approved:       getStatArr(1),
-        disapproved:    getStatArr(2),
-        abstain:        getStatArr(3),
-        notVoting:      getStatArr(4),
-        notReturned:    getStatArr(5),
-        votingmembers:  parseInt(currentlyVoting.rows[i + 1].children[1].innerText, 10) + parseInt(currentlyVoting.rows[i + 1].children[3].innerText, 10) + parseInt(currentlyVoting.rows[i + 1].children[5].innerText, 10)
+        approved: getStatArr(1),
+        disapproved: getStatArr(2),
+        abstain: getStatArr(3),
+        notVoting: getStatArr(4),
+        notReturned: getStatArr(5),
+        votingmembers: parseInt(currentlyVoting.rows[i + 1].children[1].innerText, 10) + parseInt(currentlyVoting.rows[i + 1].children[3].innerText, 10) + parseInt(currentlyVoting.rows[i + 1].children[5].innerText, 10)
       };
     }
 
@@ -75,9 +78,9 @@ export default function formatMemberBallotClosure() {
 
   resizeResultsTxtArea();
 
-  overlay.saveBallotClosure('membership');
+  saveBallotClosure('membership');
 
-///////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////////////
 
   function getStatArr(idx) { // Closure is dependent on context
     return [

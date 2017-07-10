@@ -15,6 +15,14 @@ import formatRecordSearchResults from './functions/formatRecordSearchResults';
 import formatBSR9 from './functions/formatBSR9';
 import formatMemberBallotClosure from './functions/formatMemberBallotClosure';
 import formatNewRecirculationBallot from './functions/formatNewRecirculationBallot';
+import formatNewEntireDocumentBallot from './functions/formatNewEntireDocumentBallot';
+import formatNewMemberBallot from './functions/formatNewMemberBallot';
+import formatUpdateComponentRecord from './functions/formatUpdateComponentRecord';
+import formatUpdateInterpretationBallot from './functions/formatUpdateInterpretationBallot';
+import formatNewComponentBallot from './functions/formatNewComponentBallot';
+import formatComponentBallotClosure from './functions/formatComponentBallotClosure';
+import formatViewComponentBallot from './functions/formatViewComponentBallot';
+import formatSearchBallots from './functions/formatSearchBallots';
 
 chrome.storage.sync.get({
   backgroundColor:  'rgb(235, 243, 249)',
@@ -32,31 +40,31 @@ chrome.storage.sync.get({
 
   [
     { term: 'Advanced Record Search',        fn: formatAdvancedRecordSearch },
-    // { term: 'Ballots',                       fn: overlay.formatSearchBallots },
+    { term: 'Ballots',                       fn: formatSearchBallots },
     { term: 'New Membership Ballot',         fn: formatNewMemberBallot },
-    // { term: 'New Component Ballot',          fn: overlay.formatNewComponentBallot },
-    // { term: 'New Board Procedural Ballot',   fn: overlay.formatNewComponentBallot },
-    // { term: 'New Entire Document Ballot',    fn: overlay.formatNewEntireDocumentBallot },
-    // { term: 'New Component Record',          fn: overlay.formatNewComponentRecord },
-    // { term: 'New BSR-8',                     fn: overlay.formatNewBSR8 },
+    { term: 'New Component Ballot',          fn: formatNewComponentBallot },
+    { term: 'New Board Procedural Ballot',   fn: formatNewComponentBallot },
+    { term: 'New Entire Document Ballot',    fn: formatNewEntireDocumentBallot },
+    // { term: 'New Component Record',          fn: formatNewComponentRecord },
+    // { term: 'New BSR-8',                     fn: formatNewBSR8 },
     { term: 'BSR-9',                         fn: formatBSR9 },
-    // { term: 'New Entire Document Record',    fn: overlay.formatNewEntireDocumentRecord },
+    // { term: 'New Entire Document Record',    fn: formatNewEntireDocumentRecord },
     { term: 'Recirculate Component',         fn: formatNewRecirculationBallot },
     { term: 'Record Search Results',         fn: formatRecordSearchResults },
     // // { term: 'Set Membership Options',        fn: function() { appendShortList(document.querySelector('#Committee1')); } },
-    // { term: 'Update Component Ballot',       fn: overlay.formatComponentBallotClosure },
-    // // { term: 'Update Component Record',       fn: overlay.formatUpdateComponentRecord },
-    // { term: 'Update Code Case Record',       fn: overlay.formatUpdateComponentRecord },
+    { term: 'Update Component Ballot',       fn: formatComponentBallotClosure },
+    { term: 'Update Component Record',       fn: formatUpdateComponentRecord },
+    { term: 'Update Code Case Record',       fn: formatUpdateComponentRecord },
     { term: 'Update Interpretations Record', fn: formatUpdateInterpretationRecord },
-    // { term: 'Update Interpretations Ballot', fn: overlay.formatUpdateInterpretationBallot },
+    { term: 'Update Interpretations Ballot', fn: formatUpdateInterpretationBallot },
     { term: 'Update Membership Ballot',      fn: formatMemberBallotClosure },
-    // { term: 'View Entire Document Record',   fn: overlay.formatViewEntireDocumentRecord },
-    // { term: 'View Component Ballot',         fn: overlay.formatViewComponentBallot },
+    // { term: 'View Entire Document Record',   fn: formatViewEntireDocumentRecord },
+    { term: 'View Component Ballot',         fn: formatViewComponentBallot },
     { term: 'View Component Record',         fn: formatViewComponentRecord },
-    // { term: 'View Code Case Record',         fn: overlay.formatViewCodeCaseRecord },
-    // { term: 'View Entire Document Ballot',   fn: overlay.formatViewEntireDocBallot },
+    // { term: 'View Code Case Record',         fn: formatViewCodeCaseRecord },
+    // { term: 'View Entire Document Ballot',   fn: formatViewEntireDocBallot },
     { term: 'View Interpretations',          fn: viewInterp },
-    // { term: 'View Membership Ballot',        fn: overlay.formatViewMemberBallot },
+    // { term: 'View Membership Ballot',        fn: formatViewMemberBallot },
   ].forEach(conf => {
     if (pagehdg && pagehdg.innerText.search(conf.term) > -1) {
       checkHref = false;
